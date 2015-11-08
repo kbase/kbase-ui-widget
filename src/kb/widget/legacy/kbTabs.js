@@ -43,7 +43,7 @@
  browser: true,
  white: true
  */
-define(['jquery', 'kb_widget_legacy_kbWidget'], function ($) {
+define(['jquery', 'kb/widget/legacy/kbWidget'], function ($) {
     'use strict';
     $.KBWidget({
         name: "kbTabs",

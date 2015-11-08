@@ -1,3 +1,5 @@
+/*global define*/
+/*jslint browser:true,white:true*/
 /**
  * @class KBWidget
  *
@@ -140,11 +142,10 @@
 
 define([
     'jquery',
-    'handlebars'
-], function ($, Handlebars) {
-
-    //'use strict';
-
+    'handlebars',
+    'd3'
+], function ($, Handlebars, d3) {
+    'use strict';
     $(document).on(
         'libsLoaded.kbase',
         function () {
@@ -190,23 +191,20 @@ define([
                 return {
                     setter: 'checked',
                     getter: 'checked'
-                }
-            } else {
-                return {
-                    setter: 'val',
-                    getter: 'val'
-                }
+                };
             }
-        } else {
             return {
-                setter: 'html',
-                getter: 'html'
-            }
+                setter: 'val',
+                getter: 'val'
+            };
         }
+        return {
+            setter: 'html',
+            getter: 'html'
+        };
     };
 
     var makeBindingCallback = function (elem, $target, attribute, transformers, accessors) {
-
         return $.proxy(function (e, vals) {
             e.preventDefault();
             e.stopPropagation();
@@ -223,13 +221,11 @@ define([
                 $(elem)[accessors.setter](newVal);
             }
 
-        }, $(elem))
+        }, $(elem));
     };
 
     var makeBindingBlurCallback = function (elem, $target, attribute, transformers, accessors) {
-
         return $.proxy(function (e, vals) {
-
             if (e.type === 'keypress' && e.which !== 13) {
                 return;
             }
@@ -254,17 +250,15 @@ define([
 
                     if (!validation.success) {
                         $(elem).data('validationError.kbaseBinding', validation.msg);
-                        this.popover(
-                            {
-                                placement: 'right',
-                                title: 'Validation error',
-                                content: $.proxy(function () {
-                                    return this.data('validationError.kbaseBinding')
-                                }, $(elem)),
-                                trigger: 'manual',
-                                html: true,
-                            }
-                        );
+                        this.popover({
+                            placement: 'right',
+                            title: 'Validation error',
+                            content: $.proxy(function () {
+                                return this.data('validationError.kbaseBinding');
+                            }, $(elem)),
+                            trigger: 'manual',
+                            html: true,
+                        });
 
                         this.popover('show');
                         return;
@@ -286,11 +280,10 @@ define([
                 this.data('kbase_bindingValue', this[accessors.getter]());
             }
 
-        }, $(elem))
+        }, $(elem));
     };
 
     var makeBindingFocusCallback = function (elem, transformers, accessors) {
-
         return $.proxy(function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -298,14 +291,13 @@ define([
             this.data('kbase_bindingValue', this[accessors.getter]());
 
         }, $(elem));
-
     };
 
     $.fn.asD3 = function () {
         if (this.data('d3rep') === undefined) {
             this.data('d3rep', d3.select(this.get(0)));
         }
-        return this.data('d3rep')
+        return this.data('d3rep');
     };
 
     $.fn.kb_bind = function ($target, attribute, transformers, accessors) {
@@ -317,7 +309,7 @@ define([
                 function (idx, elem) {
                     $.fn.kb_bind.apply($(elem), methodArgs);
                 }
-            )
+            );
             return this;
         }
 
@@ -347,16 +339,12 @@ define([
 
         var tagName = $(this).prop('tagName').toLowerCase();
         if (tagName.match(/^(input)$/)) {
-            $(this).on(
-                'keypress.kbaseBinding',
-                makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-                )
+            $(this).on('keypress.kbaseBinding',
+                makeBindingBlurCallback(this, $target, attribute, transformers, accessors));
 
             if ($(this).attr('type') === 'checkbox') {
-                $(this).on(
-                    'change.kbaseBinding',
-                    makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-                    )
+                $(this).on('change.kbaseBinding',
+                    makeBindingBlurCallback(this, $target, attribute, transformers, accessors));
             }
         }
 
@@ -385,7 +373,7 @@ define([
                 function (idx, elem) {
                     $.fn.kb_unbind.apply($(elem), methodArgs);
                 }
-            )
+            );
             return this;
         }
 
@@ -419,19 +407,17 @@ define([
             $(this).off(
                 'keypress.kbaseBinding',
                 makeBindingEnterCallback(this, $target, attribute, transformers, accessors)
-                )
+                );
             if ($(this).attr('type') === 'checkbox') {
                 $(this).off(
                     'change.kbaseBinding',
                     makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-                    )
+                    );
             }
         }
 
         return this;
-
     };
-
 
     var widgetRegistry = {};
     if (KBase === undefined) {
@@ -444,13 +430,13 @@ define([
                     function (name) {
                         return function () {
                             return this.valueForKey(name);
-                        }
+                        };
                     },
                 setter:
                     function (name) {
                         return function (newVal) {
                             return this.setValueForKey(name, newVal);
-                        }
+                        };
                     },
                 getter_setter:
                     function (name) {
@@ -461,10 +447,10 @@ define([
                             } else {
                                 return this.valueForKey(name);
                             }
-                        }
-                    },
+                        };
+                    }
             }
-        }
+        };
     }
 
     function subclass(constructor, superConstructor) {
@@ -738,7 +724,7 @@ define([
         } else {
             return this;
         }
-    }
+    };
 
     /**
      * @method registry
@@ -756,7 +742,7 @@ define([
             }
         }
         return registry;
-    }
+    };
 
     /**
      * @method resetRegistry
@@ -773,303 +759,295 @@ define([
             }
         }
         return this;
-    }
+    };
 
-    $.KBWidget(
-        {
-            name: 'kbaseWidget',
-            /**
-             * Writes text to console.
-             * @param {String} txt The text to write.
-             */
-            dbg: function (txt) {
-                if (window.console)
-                    console.log(txt);
-            },
-            callAfterInit: function (func) {
-                var $me = this;
-                var delayer = function () {
+    $.KBWidget({
+        name: 'kbaseWidget',
+        /**
+         * Writes text to console.
+         * @param {String} txt The text to write.
+         */
+        dbg: function (txt) {
+            if (window.console)
+                console.log(txt);
+        },
+        callAfterInit: function (func) {
+            var $me = this;
+            var delayer = function () {
 
-                    var recursion = arguments.callee;
+                var recursion = arguments.callee;
 
-                    if ($me._init) {
-                        func();
-                    } else {
-                        setTimeout(recursion, 10);
-                    }
+                if ($me._init) {
+                    func();
+                } else {
+                    setTimeout(recursion, 10);
                 }
+            };
 
-                delayer();
-                return delayer;
-            },
-            /**
-             * Initializes the widget.
-             * @param {Object} args Initialization arguments
-             */
-            init: function (args) {
+            delayer();
+            return delayer;
+        },
+        /**
+         * Initializes the widget.
+         * @param {Object} args Initialization arguments
+         */
+        init: function (args) {
 
-                this._attributes = {};
-                
-                this.runtime = args.runtime;
+            this._attributes = {};
+
+            this.runtime = args.runtime;
 //                if (!this.runtime) {
 //                    throw new Error('The required runtime option was not provided to the widget');
 //                }
 
-                var opts = $.extend(true, {}, this.options);
-                this.options = $.extend(true, {}, opts, args);
+            var opts = $.extend(true, {}, this.options);
+            this.options = $.extend(true, {}, opts, args);
 
-                var arg;
-                for (arg in args) {
-                    if (args[arg] === undefined && this.options[arg] !== undefined) {
-                        delete this.options[arg];
+            var arg;
+            for (arg in args) {
+                if (args[arg] === undefined && this.options[arg] !== undefined) {
+                    delete this.options[arg];
+                }
+            }
+
+            var attribute;
+            for (attribute in this.__attributes) {
+                if (this.options[attribute] !== undefined) {
+                    var setter = this.__attributes[attribute].setter;
+                    this[setter](this.options[attribute]);
+                }
+            }
+
+            if (this.options.template) {
+                this.callAfterInit(
+                    $.proxy(function () {
+                        this.appendUI(this.$elem);
+                    }, this)
+                    );
+            }
+
+            return this;
+        },
+        appendUI: function ($elem) {
+            if (this.options.template) {
+                $.ajax(this.options.template)
+                    .done($.proxy(function (res) {
+                        this.templateSuccess.apply(this, arguments);
+                    }, this))
+                    .fail($.proxy(function (res) {
+                        this.templateFailure.apply(this, arguments);
+                    }, this));
+            }
+
+            return $elem;
+        },
+        templateSuccess: function (templateString) {
+            var template = Handlebars.compile(templateString),
+                html = template(),
+                res = template(this.templateContent()),
+                $res = $.jqElem('span').append(res);
+            this._rewireIds($res, this);
+            this.$elem.append($res);
+        },
+        templateFailure: function (res) {
+            this.dbg("Template load failure");
+            this.dbg(res);
+        },
+        templateContent: function () {
+            return this.options.templateContent || {};
+        },
+        /**
+         * Sets an alert to display
+         * @param {String} msg The message to display
+         */
+        alert: function (msg) {
+            if (msg === undefined) {
+                msg = this.data('msg');
+            }
+            this.data('msg', msg);
+
+            return this;
+        },
+        valueForKey:
+            function (attribute) {
+                //this.trigger('didAccessValueFor' + name + '.kbase');
+                return this._attributes[attribute];
+            },
+        setValueForKey:
+            function (attribute, newVal) {
+
+                var triggerValues = undefined;
+                var oldVal = this.valueForKey(attribute);
+
+                if (newVal !== oldVal) {
+
+                    var willChangeNote = willChangeNoteForName(attribute);
+
+                    triggerValues = {
+                        oldValue: oldVal,
+                        newValue: newVal
+                    };
+                    this.trigger(willChangeNote, triggerValues);
+
+                    this._attributes[attribute] = triggerValues.newValue;
+
+                    if (triggerValues.newValue !== oldVal) {
+                        var didChangeNote = didChangeNoteForName(attribute);
+
+                        this.trigger(didChangeNote, triggerValues);
                     }
                 }
 
-                var attribute;
-                for (attribute in this.__attributes) {
-                    if (this.options[attribute] !== undefined) {
-                        var setter = this.__attributes[attribute].setter;
-                        this[setter](this.options[attribute]);
+                return this.valueForKey(attribute);
+            },
+        setValuesForKeys: function (obj) {
+            var objCopy = $.extend({}, obj);
+
+            for (var attribute in this.__attributes) {
+                if (objCopy[attribute] !== undefined) {
+                    var setter = this.__attributes[attribute].setter;
+                    this[setter](objCopy[attribute]);
+                    delete objCopy[attribute];
+                }
+            }
+
+            this.options = $.extend(this.options, objCopy);
+        },
+        /**
+         * Sets data.
+         * @param {Object} key The key for the data
+         * @param {Object} value The data itself
+         */
+        data: function (key, val) {
+            if (this.options._storage === undefined) {
+                this.options._storage = {};
+            }
+
+            if (arguments.length === 2) {
+                this.options._storage[key] = val;
+            }
+
+            if (key !== undefined) {
+                return this.options._storage[key];
+            } else {
+                return this.options._storage;
+            }
+        },
+        _rewireIds: function ($elem, $target) {
+
+            if ($target === undefined) {
+                $target = $elem;
+            }
+
+            if ($elem.attr('id')) {
+                $target.data($elem.attr('id'), $elem);
+                $elem.removeAttr('id');
+            }
+
+            $.each(
+                $elem.find('[id]'),
+                function (idx) {
+                    $target.data($(this).attr('id'), $(this));
+                    $(this).attr('data-id', $(this).attr('id'));
+                    $(this).removeAttr('id');
+                }
+            );
+
+            return $elem;
+        },
+        sortCaseInsensitively: function (a, b) {
+            if (a.toLowerCase() < b.toLowerCase()) {
+                return -1;
+            }
+            if (a.toLowerCase() > b.toLowerCase()) {
+                return 1;
+            }
+            return 0;
+        },
+        sortByKey: function (key, insensitively) {
+            if (insensitively) {
+                return function (a, b) {
+                    if (a[key].toLowerCase() < b[key].toLowerCase()) {
+                        return -1;
                     }
-                }
-
-                if (this.options.template) {
-                    this.callAfterInit(
-                        $.proxy(function () {
-                            this.appendUI(this.$elem);
-                        }, this)
-                        );
-                }
-
-                return this;
-            },
-            appendUI: function ($elem) {
-                if (this.options.template) {
-                    $.ajax(this.options.template)
-                        .done($.proxy(function (res) {
-                            this.templateSuccess.apply(this, arguments);
-                        }, this))
-                        .fail($.proxy(function (res) {
-                            this.templateFailure.apply(this, arguments);
-                        }, this));
-                }
-
-                return $elem;
-            },
-            templateSuccess: function (templateString) {
-                var template = Handlebars.compile(templateString),
-                    html = template(),
-                    res = template(this.templateContent()),
-                    $res = $.jqElem('span').append(res);
-                this._rewireIds($res, this);
-                this.$elem.append($res);
-            },
-            templateFailure: function (res) {
-                this.dbg("Template load failure");
-                this.dbg(res);
-            },
-            templateContent: function () {
-                return this.options.templateContent || {};
-            },
-            /**
-             * Sets an alert to display
-             * @param {String} msg The message to display
-             */
-            alert: function (msg) {
-                if (msg === undefined) {
-                    msg = this.data('msg');
-                }
-                this.data('msg', msg);
-
-                return this;
-            },
-            valueForKey:
-                function (attribute) {
-                    //this.trigger('didAccessValueFor' + name + '.kbase');
-                    return this._attributes[attribute];
-                },
-            setValueForKey:
-                function (attribute, newVal) {
-
-                    var triggerValues = undefined;
-                    var oldVal = this.valueForKey(attribute);
-
-                    if (newVal !== oldVal) {
-
-                        var willChangeNote = willChangeNoteForName(attribute);
-
-                        triggerValues = {
-                            oldValue: oldVal,
-                            newValue: newVal
-                        };
-                        this.trigger(willChangeNote, triggerValues);
-
-                        this._attributes[attribute] = triggerValues.newValue;
-
-                        if (triggerValues.newValue !== oldVal) {
-                            var didChangeNote = didChangeNoteForName(attribute);
-
-                            this.trigger(didChangeNote, triggerValues);
-                        }
+                    if (a[key].toLowerCase() > b[key].toLowerCase()) {
+                        return 1;
                     }
-
-                    return this.valueForKey(attribute);
-                },
-            setValuesForKeys: function (obj) {
-
-                var objCopy = $.extend({}, obj);
-
-                for (attribute in this.__attributes) {
-                    if (objCopy[attribute] !== undefined) {
-                        var setter = this.__attributes[attribute].setter;
-                        this[setter](objCopy[attribute]);
-                        delete objCopy[attribute];
+                    return 0;
+                };
+            } else {
+                return function (a, b) {
+                    if (a[key] < b[key]) {
+                        return -1;
                     }
-                }
-
-                this.options = $.extend(this.options, objCopy);
-
-            },
-            /**
-             * Sets data.
-             * @param {Object} key The key for the data
-             * @param {Object} value The data itself
-             */
-            data: function (key, val) {
-
-                if (this.options._storage === undefined) {
-                    this.options._storage = {};
-                }
-
-                if (arguments.length === 2) {
-                    this.options._storage[key] = val;
-                }
-
-                if (key !== undefined) {
-                    return this.options._storage[key];
-                } else {
-                    return this.options._storage;
-                }
-            },
-            _rewireIds: function ($elem, $target) {
-
-                if ($target === undefined) {
-                    $target = $elem;
-                }
-
-                if ($elem.attr('id')) {
-                    $target.data($elem.attr('id'), $elem);
-                    $elem.removeAttr('id');
-                }
-
-                $.each(
-                    $elem.find('[id]'),
-                    function (idx) {
-                        $target.data($(this).attr('id'), $(this));
-                        $(this).attr('data-id', $(this).attr('id'));
-                        $(this).removeAttr('id');
+                    if (a[key] > b[key]) {
+                        return 1;
                     }
+                    return 0;
+                };
+            }
+        },
+        trigger: function () {
+            this.$elem.trigger.apply(this.$elem, arguments);
+        },
+        on: function () {
+            this.$elem.on.apply(this.$elem, arguments);
+        },
+        off: function () {
+            this.$elem.off.apply(this.$elem, arguments);
+        },
+        makeObserverCallback: function ($target, attribute, callback) {
+            return $.proxy(function (e, vals) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                callback.call(this, e, $target, vals);
+            }, this);
+        },
+        observe: function ($target, attribute, callback) {
+            $target.on(
+                attribute,
+                $target,
+                this.makeObserverCallback($target, attribute, callback)
                 );
 
-                return $elem;
-            },
-            sortCaseInsensitively: function (a, b) {
-                if (a.toLowerCase() < b.toLowerCase()) {
-                    return -1
-                } else if (a.toLowerCase() > b.toLowerCase()) {
-                    return 1
-                } else {
-                    return 0
-                }
-            },
-            sortByKey: function (key, insensitively) {
-                if (insensitively) {
-                    return function (a, b) {
-                        if (a[key].toLowerCase() < b[key].toLowerCase()) {
-                            return -1
-                        } else if (a[key].toLowerCase() > b[key].toLowerCase()) {
-                            return 1
-                        } else {
-                            return 0
-                        }
-                    }
-                } else {
-                    return function (a, b) {
-                        if (a[key] < b[key]) {
-                            return -1
-                        } else if (a[key] > b[key]) {
-                            return 1
-                        } else {
-                            return 0
-                        }
-                    }
-                }
-            },
-            trigger: function () {
-                this.$elem.trigger.apply(this.$elem, arguments);
-            },
-            on: function () {
-                this.$elem.on.apply(this.$elem, arguments);
-            },
-            off: function () {
-                this.$elem.off.apply(this.$elem, arguments);
-            },
-            makeObserverCallback: function ($target, attribute, callback) {
-                return $.proxy(function (e, vals) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    callback.call(this, e, $target, vals);
-
-                }, this)
-            },
-            observe: function ($target, attribute, callback) {
-                $target.on(
-                    attribute,
-                    $target,
-                    this.makeObserverCallback($target, attribute, callback)
-                    );
-
-            },
-            unobserve: function ($target, attribute, callback) {
-                $target.off(
-                    attribute,
-                    $target,
-                    this.makeObserverCallback($target, attribute, callback)
-                    );
-            },
-            /*
-             kb_bind : function($target, attribute, callback) {
-             var event = didChangeNoteForName(attribute);
-             $target.on(event, $target, callback);
-             },
-             
-             kb_unbind : function($target, attribute, callback) {
-             var event = didChangeNoteForName(attribute);
-             $target.off(event, callback);
-             },
-             */
+        },
+        unobserve: function ($target, attribute, callback) {
+            $target.off(
+                attribute,
+                $target,
+                this.makeObserverCallback($target, attribute, callback)
+                );
+        },
+        /*
+         kb_bind : function($target, attribute, callback) {
+         var event = didChangeNoteForName(attribute);
+         $target.on(event, $target, callback);
+         },
+         
+         kb_unbind : function($target, attribute, callback) {
+         var event = didChangeNoteForName(attribute);
+         $target.off(event, callback);
+         },
+         */
 
 //*
-            kb_bind: function ($target, attribute, callback) {
-                var event = didChangeNoteForName(attribute);
-                this.observe($target, event, callback);
-            },
-            kb_unbind: function ($target, attribute, callback) {
-                var event = didChangeNoteForName(attribute);
-                //$target.off(event, callback);
-                this.unobserve($target, event, callback);
-            },
-            uuid: function () {
-                var result = '';
-                for (var i = 0; i < 32; i++) {
-                    result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
-                }
+        kb_bind: function ($target, attribute, callback) {
+            var event = didChangeNoteForName(attribute);
+            this.observe($target, event, callback);
+        },
+        kb_unbind: function ($target, attribute, callback) {
+            var event = didChangeNoteForName(attribute);
+            //$target.off(event, callback);
+            this.unobserve($target, event, callback);
+        },
+        uuid: function () {
+            var result = '';
+            for (var i = 0; i < 32; i++) {
+                result += Math.floor(Math.random() * 16).toString(16).toUpperCase();
+            }
 
-                return 'uuid-' + result;
-            },
-//*/
-
+            return 'uuid-' + result;
         }
-    );
+    });
 });

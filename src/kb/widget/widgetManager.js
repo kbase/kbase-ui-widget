@@ -7,8 +7,8 @@
  */
 define([
     'bluebird',
-    'kb_widget_adapters_objectWidget',
-    'kb_widget_adapters_kbWidget'
+    'kb/widget/adapters/objectWidget',
+    'kb/widget/adapters/kbWidget'
 ],
     function (Promise, widgetAdapter, KBWidgetAdapter) {
         'use strict';

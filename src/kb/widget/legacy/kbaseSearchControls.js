@@ -1,3 +1,5 @@
+/*global define*/
+/*jslint browser:true,white:true*/
 /*
  control to tack on arbitrary command groups to any container element.
  This lets you mouse over and display buttons (with icons) in the upper right.
@@ -28,7 +30,11 @@
  );
  */
 
-define(['jquery', 'bootstrap', 'kb_widget_legacy_kbWidget'], function ($) {
+define([
+    'jquery', 
+    'bootstrap', 
+    'kb/widget/legacy/kbWidget'
+], function ($) {
 
     $.KBWidget({
         name: "kbaseSearchControls",

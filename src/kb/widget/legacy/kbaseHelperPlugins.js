@@ -1,10 +1,5 @@
-/*global
- define
- */
-/*jslint
- browser: true,
- white: true
- */
+/*global define*/
+/*jslint browser:true,white:true*/
 define([
     'jquery',
     'kb_common_html'

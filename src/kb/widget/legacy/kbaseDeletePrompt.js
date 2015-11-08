@@ -1,3 +1,5 @@
+/*global define*/
+/*jslint white:true,browser:true*/
 /*
  
  Simplified prompt for delete confirmations.
@@ -28,40 +30,35 @@
  Sure, you could just set it up through kbasePrompt. But why bother?
  */
 
-define(
-    [
-        'jquery',
-        'kb_widget_legacy_kbWidget'
-    ],
-    function ($) {
+define([
+    'jquery',
+    'kb/widget/legacy/kbWidget'
+], function ($) {
+    'use strict';
+    $.KBWidget({
+        name: "kbaseDeletePrompt",
+        parent: 'kbasePrompt',
+        version: "1.0.0",
+        options: {
+            controls: ['cancelButton', 'okayButton']
+        },
+        init: function (options) {
+            this._super(options);
 
-        $.KBWidget({
-            name: "kbaseDeletePrompt",
-            parent: 'kbasePrompt',
-            version: "1.0.0",
-            options: {
-                controls: ['cancelButton', 'okayButton']
-            },
-            init: function (options) {
-
-                this._super(options);
-
-                return $('<div></div>').kbasePrompt(
-                    {
-                        title: 'Confirm deletion',
-                        body: 'Really delete <strong>' + this.options.name + '</strong>?',
-                        controls: [
-                            'cancelButton',
-                            {
-                                name: 'Delete',
-                                type: 'primary',
-                                callback: this.options.callback
-                            }
-                        ],
-                    }
-                )
-
-            },
-        });
-
+            return $('<div></div>').kbasePrompt(
+                {
+                    title: 'Confirm deletion',
+                    body: 'Really delete <strong>' + this.options.name + '</strong>?',
+                    controls: [
+                        'cancelButton',
+                        {
+                            name: 'Delete',
+                            type: 'primary',
+                            callback: this.options.callback
+                        }
+                    ]
+                }
+            );
+        }
     });
+});

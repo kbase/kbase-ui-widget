@@ -1,3 +1,5 @@
+/*global define*/
+/*jslint browser:true,white:true*/
 /*
  
  e.g.,
@@ -49,10 +51,10 @@
 
 define([
     'jquery',
-    'kb_widget_legacy_kbWidget',
-    'kb_widget_legacy_deletePrompt',
-    'kb_widget_legacy_buttonControls',
-    'kb_widget_legacy_searchControls',
+    'kb/widget/legacy/kbWidget',
+    'kb/widget/legacy/deletePrompt',
+    'kb/widget/legacy/buttonControls',
+    'kb/widget/legacy/searchControls',
 ],
     function ($) {
         $.KBWidget({
