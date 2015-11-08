@@ -1,6 +1,6 @@
 define([
     'jquery',
-    'kb_widgetBases_kbWidget'
+    'kb_widget_legacy_kbWidget'
 ], function ($) {
     'use strict';
     $.KBWidget({
