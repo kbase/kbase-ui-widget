@@ -43,9 +43,11 @@ define([
                     require([widget.module], function (factory) {
                         if (typeof factory === 'undefined') {
                             reject('Factory widget maker is undefined');
+                            return;
                         }
                         if (factory.make === undefined) {
                             reject('Factory widget does not have a "make" method: ' + widget.name + ', ' + widget.module);
+                            return;
                         }
                         try {
                             resolve(factory.make(config));
