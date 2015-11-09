@@ -94,11 +94,6 @@ define([
                         if (rec.widget.init) {
                             return rec.widget.init(config);
                         }
-                    }).filter(function (next) {
-                        if (next) {
-                            return true;
-                        }
-                        return false;
                     }));
                 });
         }
