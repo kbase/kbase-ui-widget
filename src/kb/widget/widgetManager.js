@@ -42,7 +42,10 @@ define([
                 return new Promise(function (resolve, reject) {
                     require([widget.module], function (factory) {
                         if (typeof factory === 'undefined') {
-                            reject('Factory widget maker is undefined');
+                            reject({
+                                message: 'Factory widget maker is undefined for ' + widget.module,
+                                data: {widget: widget}
+                            });
                             return;
                         }
                         if (factory.make === undefined) {
