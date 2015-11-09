@@ -94,7 +94,7 @@ define([
                 
                 console.log('VALIDATE');
                 console.log('widget looks good');
-                conwole.log(widget);
+                console.log(widget);
             }
 
             function makeWidget(widgetName, config) {
