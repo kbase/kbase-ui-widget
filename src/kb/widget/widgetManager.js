@@ -41,6 +41,9 @@ define([
             function makeFactoryWidget(widget, config) {
                 return new Promise(function (resolve, reject) {
                     require([widget.module], function (factory) {
+                        if (typeof factory === 'undefined') {
+                            reject('Factory widget maker is undefined');
+                        }
                         if (factory.make === undefined) {
                             reject('Factory widget does not have a "make" method: ' + widget.name + ', ' + widget.module);
                         }
@@ -79,19 +82,19 @@ define([
                     return KBWidgetAdapter.make(adapterConfig);
                 });
             }
-            
+
             function validateWidget(widget, name) {
                 var message;
                 if (typeof widget !== 'object') {
                     message = 'Invalid widget after making: ' + name;
                 }
-                
+
                 if (message) {
                     console.error(message);
                     console.error(widget);
                     throw new Error(message);
                 }
-                
+
                 console.log('VALIDATE');
                 console.log('widget looks good');
                 console.log(widget);
@@ -99,30 +102,32 @@ define([
 
             function makeWidget(widgetName, config) {
                 var widgetDef = widgets[widgetName],
-                    widget;
+                    widgetPromise;
                 if (!widgetDef) {
                     throw new Error('Widget ' + widgetName + ' not found');
                 }
-                
+
                 config = config || {};
                 config.runtime = runtime;
 
                 // How we create a widget depends on what type it is.               
                 switch (widgetDef.type) {
                     case 'factory':
-                        widget =  makeFactoryWidget(widgetDef, config);
+                        widgetPromise = makeFactoryWidget(widgetDef, config);
                         break;
                     case 'object':
-                        widget = makeObjectWidget(widgetDef, config);
+                        widgetPromise = makeObjectWidget(widgetDef, config);
                         break;
                     case 'kbwidget':
-                        widget = makeKbWidget(widgetDef, config);
+                        widgetPromise = makeKbWidget(widgetDef, config);
                         break;
                     default:
                         throw new Error('Unsupported widget type ' + widgetDef.type);
                 }
-                validateWidget(widget, widgetName);
-                return widget;
+                return widgetPromise
+                    .then(function (widget) {
+                        validateWidget(widget, widgetName);
+                    });
             }
 
 
