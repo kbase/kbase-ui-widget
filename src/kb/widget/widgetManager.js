@@ -127,6 +127,7 @@ define([
                 return widgetPromise
                     .then(function (widget) {
                         validateWidget(widget, widgetName);
+                        return widget;
                     });
             }
 
