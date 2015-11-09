@@ -95,7 +95,7 @@ define([
                     throw new Error(message);
                 }
 
-                console.log('VALIDATE');
+                console.log('VALIDATE: ' + name);
                 console.log('widget looks good');
                 console.log(widget);
             }
