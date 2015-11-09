@@ -107,10 +107,13 @@ define([
                 switch (widgetDef.type) {
                     case 'factory':
                         widget =  makeFactoryWidget(widgetDef, config);
+                        break;
                     case 'object':
                         widget = makeObjectWidget(widgetDef, config);
+                        break;
                     case 'kbwidget':
                         widget = makeKbWidget(widgetDef, config);
+                        break;
                     default:
                         throw new Error('Unsupported widget type ' + widgetDef.type);
                 }
