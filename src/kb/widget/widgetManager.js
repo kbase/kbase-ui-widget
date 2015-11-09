@@ -85,6 +85,7 @@ define([
 
             function validateWidget(widget, name) {
                 var message;
+                console.log('VALIDATING: ' + name);
                 if (typeof widget !== 'object') {
                     message = 'Invalid widget after making: ' + name;
                 }
@@ -95,8 +96,7 @@ define([
                     throw new Error(message);
                 }
 
-                console.log('VALIDATE: ' + name);
-                console.log('widget looks good');
+                console.log('widget looks good: ' + name);
                 console.log(widget);
             }
 
