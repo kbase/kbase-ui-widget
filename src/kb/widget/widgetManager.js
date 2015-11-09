@@ -79,9 +79,23 @@ define([
                     return KBWidgetAdapter.make(adapterConfig);
                 });
             }
+            
+            function validateWidget(widget, name) {
+                var message;
+                if (typeof widget !== 'object') {
+                    message = 'Invalid widget after making: ' + name;
+                }
+                
+                if (message) {
+                    console.error(message);
+                    console.error(widget);
+                    throw new Error(message);
+                }
+            }
 
             function makeWidget(widgetName, config) {
-                var widgetDef = widgets[widgetName];
+                var widgetDef = widgets[widgetName],
+                    widget;
                 if (!widgetDef) {
                     throw new Error('Widget ' + widgetName + ' not found');
                 }
@@ -89,18 +103,19 @@ define([
                 config = config || {};
                 config.runtime = runtime;
 
-                // How we create a widget depends on what type it is.
+                // How we create a widget depends on what type it is.               
                 switch (widgetDef.type) {
                     case 'factory':
-                        return makeFactoryWidget(widgetDef, config);
+                        widget =  makeFactoryWidget(widgetDef, config);
                     case 'object':
-                        return makeObjectWidget(widgetDef, config);
+                        widget = makeObjectWidget(widgetDef, config);
                     case 'kbwidget':
-                        return makeKbWidget(widgetDef, config);
+                        widget = makeKbWidget(widgetDef, config);
                     default:
                         throw new Error('Unsupported widget type ' + widgetDef.type);
                 }
-
+                validateWidget(widget, widgetName);
+                return widget;
             }
 
 
