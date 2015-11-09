@@ -91,6 +91,10 @@ define([
                     console.error(widget);
                     throw new Error(message);
                 }
+                
+                console.log('VALIDATE');
+                console.log('widget looks good');
+                conwole.log(widget);
             }
 
             function makeWidget(widgetName, config) {
