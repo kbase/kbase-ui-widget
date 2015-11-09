@@ -375,7 +375,9 @@ define([
             }
             function detach() {
                 return Promise.try(function () {
-                    mount.innerHTML = '';
+                    if (mount) {
+                        mount.removeChild(container);
+                    }
                     container = null;
                     mount = null;
                     if (hasHook('detach')) {
