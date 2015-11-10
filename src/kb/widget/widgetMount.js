@@ -26,27 +26,27 @@ define([
             container = dom.createElement('div');
             container = mounted.appendChild(container);
             container.id = html.genId();
-            
+
             function unmount() {
                 return Promise.try(function () {
                     if (mountedWidget) {
                         var widget = mountedWidget.widget;
-                        return widget.stop()
+                        return Promise.try(function () {
+                            return widget.stop && widget.stop();
+                        })
                             .then(function () {
-                                return widget.detach();
+                                return widget.detach && widget.detach();
                             })
                             .then(function () {
-                                if (widget.destroy) {
-                                    return widget.destroy();
-                                }
+                                return widget.destroy && widget.destroy();
                             });
                     }
                 });
             }
             function mount(widgetId, params) {
                 return Promise.try(function () {
-                        return runtime.getService('widget').makeWidget(widgetId, {});
-                    })
+                    return runtime.getService('widget').makeWidget(widgetId, {});
+                })
                     .then(function (widget) {
                         if (widget === undefined) {
                             throw new Error('Widget could not be created: ' + widgetId);
@@ -57,11 +57,7 @@ define([
                             container: null,
                             state: 'created'
                         };
-                        return [widget, Promise.try(function () {
-                            if (widget.init) {
-                                return widget.init();
-                            }
-                        })];
+                        return [widget, widget.init && widget.init()];
                     })
                     .spread(function (widget) {
                         var c = dom.createElement('div');
@@ -69,19 +65,13 @@ define([
                         container.innerHTML = '';
                         dom.append(container, c);
                         mountedWidget.container = c;
-                        return [widget, widget.attach(c)];
+                        return [widget, widget.attach && widget.attach(c)];
                     })
                     .spread(function (widget) {
-                        return [widget, Promise.try(function () {
-                            if (widget.start) {
-                                return widget.start(params);
-                            }
-                        })];
+                        return [widget, widget.start && widget.start(params)];
                     })
                     .spread(function (widget) {
-                        if (widget.run) {
-                            return widget.run(params);
-                        }
+                        return widget.run && widget.run(params);
                     });
             }
             function mountWidget(widgetId, params) {
@@ -90,14 +80,14 @@ define([
                 return Promise.try(function () {
                     if (mountedWidget) {
                         var widget = mountedWidget.widget;
-                        return widget.stop()
+                        return Promise.try(function () {
+                            return widget.stop && widget.stop();
+                        })
                             .then(function () {
-                                return widget.detach();
+                                return widget.detach && widget.detach();
                             })
                             .then(function () {
-                                if (widget.destroy) {
-                                    return widget.destroy();
-                                }
+                                return widget.destroy && widget.destroy();
                             });
                     }
                 })
@@ -115,11 +105,7 @@ define([
                             container: null,
                             state: 'created'
                         };
-                        return [widget, Promise.try(function () {
-                            if (widget.init) {
-                                return widget.init();
-                            }
-                        })];
+                        return [widget, widget.init && widget.init()];
                     })
                     .spread(function (widget) {
                         var c = dom.createElement('div');
@@ -127,17 +113,13 @@ define([
                         container.innerHTML = '';
                         dom.append(container, c);
                         mountedWidget.container = c;
-                        return [widget, widget.attach(c)];
+                        return [widget, widget.attach && widget.attach(c)];
                     })
                     .spread(function (widget) {
-                        if (widget.start) {
-                            return [widget, widget.start(params)];
-                        }
+                        return [widget, widget.start && widget.start(params)];
                     })
                     .spread(function (widget) {
-                        if (widget.run) {
-                            return widget.run(params);
-                        }
+                        return widget.run && widget.run(params);
                     });
             }
             return {
@@ -146,9 +128,9 @@ define([
                 unmount: unmount
             };
         }
-    return {
-        make: function (config) {
-            return factory(config);
-        }
-    };
-});
+        return {
+            make: function (config) {
+                return factory(config);
+            }
+        };
+    });

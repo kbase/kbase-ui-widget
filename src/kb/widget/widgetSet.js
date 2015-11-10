@@ -111,8 +111,6 @@ define([
                         message: 'The widget ' + rec.title + ' does not have a valid node at ' + rec.id
                     };
                 }
-                console.log('ATTACH');
-                console.log(rec);
                 return rec.widget.attach(rec.node);
             }));
         }
