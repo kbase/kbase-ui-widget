@@ -289,7 +289,13 @@ define([
                 };
             }
             // var layout = buildCollapseLayout({collapsed: false});
-            var layout = buildLayout();
+            var layout;
+            function getLayout() {
+                if (!layout) {
+                    layout = buildLayout();
+                }
+                return layout;
+            }
 
             function setContent(element, content) {
                 var node = container.querySelector('[data-element="' + element + '"]');
@@ -331,7 +337,7 @@ define([
                 return Promise.try(function () {
                     mount = node;
                     container = dom.append(mount, dom.createElement('div'));
-                    container.innerHTML = layout.content;
+                    container.innerHTML = getLayout().content;
                     if (hasHook('attach')) {
                         var promises = getHook('attach').map(function (fun) {
                             return Promise.try(function () {
@@ -356,11 +362,8 @@ define([
                                     place.node = document.getElementById(place.id);                                    
                                 }
                                 places[name] = place;
-                            })
-                        })
-                        
-                    } else {
-                        
+                            });
+                        });
                     }
                 });
             }
