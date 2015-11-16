@@ -16,7 +16,10 @@ define([
                 state = State.make(),
                 runtime = config.runtime,
                 internalApi = {}, externalApi = {},
-                domEvent = domEventFactory.make();
+                domEvent = domEventFactory.make(),
+                params = State.make(),
+                paramDefaults = config.defaults,
+                places = {};
 
             if (!runtime) {
                 throw {
@@ -76,6 +79,23 @@ define([
             function hasState(prop) {
                 return state.has(prop);
             }
+            
+            // Just params
+            function setParam(prop, value) {
+                params.set(prop, value);
+            }
+            function getParam(prop, defaultValue) {
+                return params.get(prop, defaultValue || paramDefaults[prop]);
+            }
+            function hasParam(prop) {
+                return params.has(prop);
+            }
+            
+            // Direct interaction with DOM, discouraged, but sometimes necessary.
+            function getDomNode() {
+                return container;
+            }
+            
 
             // EVENTS
             function recv(channel, message, handler) {
@@ -121,9 +141,18 @@ define([
                 send: send,
                 getConfig: getConfig,
                 hasConfig: hasConfig,
+                
                 getState: getState,
                 setState: setState,
                 hasState: hasState,
+                
+                getParam: getParam,
+                setParam: setParam,
+                hasParam: hasParam,
+                
+                getPlace: getPlace,
+                
+                getDomNode: getDomNode,
                 get: getState,
                 set: setState,
                 addDomEvent: addDomEvent,
@@ -274,6 +303,14 @@ define([
                     node.innerHTML = content;
                 }
             }
+            function getNode(element) {
+                return container.querySelector('[data-element="' + element + '"]');
+            }
+            
+            // Places
+            function getPlace(name) {
+                return places[name];
+            }
 
             // The Interface
 
@@ -305,6 +342,25 @@ define([
                             .then(function () {
                                 attachDomEvents();
                             });
+                    } else if (hasHook('layout')) {
+                        var layout = getHook('layout')[0];
+                        return Promise.try(function () {
+                            return layout.call(internalApi);
+                        })
+                        .then(function (result) {
+                            setContent('body', result.content);                        
+                            Object.keys(result.places).forEach(function (name) {
+                                var place = result.places[name],
+                                    node;
+                                if (place.id) {
+                                    place.node = document.getElementById(place.id);                                    
+                                }
+                                places[name] = place;
+                            })
+                        })
+                        
+                    } else {
+                        
                     }
                 });
             }
