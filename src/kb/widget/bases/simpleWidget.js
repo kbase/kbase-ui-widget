@@ -3,10 +3,10 @@
 define([
     'bluebird',
     'underscore',
-    'kb_common_dom',
-    'kb_common_state',
-    'kb_common_html',
-    'kb_common_domEvent'
+    'kb/common/dom',
+    'kb/common/state',
+    'kb/common/html',
+    'kb/common/domEvent'
 ],
     function (Promise, _, dom, State, html, domEventFactory) {
         'use strict';

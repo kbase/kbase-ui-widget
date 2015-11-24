@@ -2,7 +2,7 @@
 /*jslint browser:true,white:true*/
 define([
     'jquery',
-    'kb_common_html'
+    'kb/common/html'
 ], function ($, html) {
     'use strict';
     // jQuery plugins that you can use to add and remove a 

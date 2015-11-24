@@ -8,8 +8,8 @@
 define([
     'bluebird',
     'jquery',
-    'kb_common_utils',
-    'kb_common_dom'
+    'kb/common/utils',
+    'kb/common/dom'
 ], function (Promise, $, Utils, dom) {
     'use strict';
 

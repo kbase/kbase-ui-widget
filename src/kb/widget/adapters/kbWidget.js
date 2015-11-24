@@ -9,7 +9,7 @@ define([
     'jquery',
     'underscore',
     'bluebird',
-    'kb_common_html'
+    'kb/common/html'
 ], function ($, _, Promise, html) {
     'use strict';
     
