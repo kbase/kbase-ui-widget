@@ -33,7 +33,7 @@
 define([
     'jquery', 
     'bootstrap', 
-    'kb/widget/legacy/kbWidget'
+    'kb/widget/legacy/widget'
 ], function ($) {
 
     $.KBWidget({

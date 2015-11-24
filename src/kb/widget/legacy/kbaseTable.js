@@ -51,7 +51,7 @@
 
 define([
     'jquery',
-    'kb/widget/legacy/kbWidget',
+    'kb/widget/legacy/widget',
     'kb/widget/legacy/deletePrompt',
     'kb/widget/legacy/buttonControls',
     'kb/widget/legacy/searchControls',
