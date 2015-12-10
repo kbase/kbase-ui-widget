@@ -40,6 +40,9 @@ define([
                             .then(function () {
                                 return widget.destroy && widget.destroy();
                             });
+                    } else {
+                        // ignore
+                        return null;
                     }
                 });
             }
