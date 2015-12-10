@@ -145,7 +145,7 @@ define([
     'handlebars',
     'd3'
 ], function ($, Handlebars, d3) {
-    'use strict';
+    // 'use strict';
     $(document).on(
         'libsLoaded.kbase',
         function () {
@@ -771,13 +771,16 @@ define([
             if (window.console)
                 console.log(txt);
         },
-        callAfterInit: function callAfterInit(func) {
+        callAfterInit: function (func) {
             var $me = this;
             var delayer = function () {
+
+                var recursion = arguments.callee;
+
                 if ($me._init) {
                     func();
                 } else {
-                    setTimeout(callAfterInit, 10);
+                    setTimeout(recursion, 10);
                 }
             };
 
