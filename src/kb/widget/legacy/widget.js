@@ -771,16 +771,13 @@ define([
             if (window.console)
                 console.log(txt);
         },
-        callAfterInit: function (func) {
+        callAfterInit: function callAfterInit(func) {
             var $me = this;
             var delayer = function () {
-
-                var recursion = arguments.callee;
-
                 if ($me._init) {
                     func();
                 } else {
-                    setTimeout(recursion, 10);
+                    setTimeout(callAfterInit, 10);
                 }
             };
 
