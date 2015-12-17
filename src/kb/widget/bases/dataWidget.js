@@ -19,15 +19,26 @@ define([
                 domEvent = domEventFactory.make(),
                 params = State.make(),
                 paramDefaults = config.defaults,
-                places = {};
+                places = {},
+		rendered, error;
+
+            setStatus('new');
 
             if (!runtime) {
-                throw {
-                    type: 'ArgumentError',
-                    reason: 'RuntimeMissing',
-                    blame: 'dataWidget',
-                    message: 'The runtime argument was not provided'
-                };
+	    	// Get fancier later.
+		setError({
+	          type: 'ArgumentError',
+                  reason: 'RuntimeMissing',
+                  blame: 'dataWidget',
+                  message: 'The runtime argument was not provided'
+		});
+		throw new Error('The runtime argument was not provided');
+                //throw {
+                //    type: 'ArgumentError',
+                //    reason: 'RuntimeMissing',
+                //    blame: 'dataWidget',
+                //    message: 'The runtime argument was not provided'
+                //};
             }
 
             // The hooks for widget objects.
@@ -79,6 +90,18 @@ define([
             function hasState(prop) {
                 return state.has(prop);
             }
+            function setClean() {
+                return state.setClean();
+            }
+            
+            // STATUS
+            function setStatus(newStatus) {
+                status = newStatus;
+            }
+            function getStatus() {
+                return status;
+            }
+            
             
             // Just params
             function setParam(prop, value) {
@@ -161,19 +184,38 @@ define([
                 runtime: runtime
             });
 
-
             // RENDERING
+
+            function renderError() {
+                setClean();
+                var error = getState('error');
+                if (error) {
+                    console.log('setting error: '); 
+                    console.log(error);
+                    var content = html.makeObjectTable(error, Object.keys(error)); 
+                    setContent('error', content);
+                    setContent('body', '');
+                }
+            }
 
             function render() {
                 return Promise.try(function () {
                     if (!state.isDirty()) {
                         return;
                     }
-                    state.setClean();
+                    setClean();
                     // For now we assume that rendering blows away dom events
                     // and re-initializes them.
                     // Let us get more subtle later.
                     detachDomEvents();
+                    
+                    // If we are in an error state, do the special error rendering,
+                    // that's all.
+                    if (isError()) {
+                        renderError();
+                        return;
+                    }
+
                     var renderHooks = getHook('render');
                     if (renderHooks.length > 1) {
                         throw {
@@ -185,7 +227,7 @@ define([
                         return;
                     }
                     return Promise.try(function () {
-                        return renderHooks[0].call(internalApi)
+                        return renderHooks[0].call(internalApi);
                     })
                         .then(function (results) {
                             if (results) {
@@ -235,10 +277,13 @@ define([
                                     if (result) {
                                         setState(result.name, result.value);
                                     }
-                                })
+                                });
                             });
                     }
-                });
+                })
+                    .then(function () {
+                        setStatus('fetched');
+                    });
             }
 
             function buildLayout() {
@@ -367,6 +412,24 @@ define([
                     }
                 });
             }
+            function setError(arg) {
+                setStatus('error');
+                setState('error', arg);
+            }
+            function renderDataAccessError(error) {
+                if (error.status && error.status === 500) {
+                    return html.makeTableRotated({
+                        class: 'table table-striped',
+                        columns: ['Name', 'Code', 'Message', 'Source Error'],
+                        rows: [[error.error.name, error.error.code, error.error.message, error.error.error]] 
+                    });
+                } else {
+                    return 'not a data access error';
+                }
+            }
+            function isError() {
+                return status === 'error';
+            }
             function start(params) {
                 return Promise.try(function () {
                     // Start the heartbeat listener, which presently just 
@@ -383,8 +446,12 @@ define([
                             })
                             .catch(function (err) {
                                 // handle render error
-                                console.log('ERROR');
-                                console.log(err);
+                                setError({
+                                    type: 'RenderError',
+                                    message: 'An error was encountered while rendering',
+                                    description: renderDataAccessError(err),
+                                    data: err
+                                });
                             });
                     }));
                     return Promise.try(function () {
@@ -417,7 +484,16 @@ define([
             function run(params) {
                 return Promise.try(function () {
                     setState('params', params);
-                    return fetchData(params);
+                    return fetchData(params)
+                        .catch(function (err) {
+                            setError({
+                                type: 'FetchError',
+                                reason: 'Unknown',
+                                message: 'Error encountered fetching data',
+                                description: renderDataAccessError(err),
+                                data: err 
+                            });
+                        });
                 });
             }
             function stop() {
