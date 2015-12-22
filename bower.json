@@ -1,6 +1,6 @@
 {
     "name": "kbase-ui-widget",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "main": [
         "./kb/widget/adapters/kbWidget.js",
         "./kb/widget/adapters/objectWidget.js",
