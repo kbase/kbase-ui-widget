@@ -39,6 +39,9 @@ define([
                             })
                             .then(function () {
                                 return widget.destroy && widget.destroy();
+                            })
+                            .finally(function () {
+                                mountedWidget = undefined;
                             });
                     } else {
                         // ignore
