@@ -498,6 +498,11 @@ define([
             }
             function stop() {
                 return Promise.try(function () {
+                    listeners.forEach(function(listener) {
+                        if (listener) {
+                            runtime.drop(listener);
+                        }
+                    });
                     if (hasHook('stop')) {
                         var promises = getHook('stop').map(function (fun) {
                             return Promise.try(function () {
