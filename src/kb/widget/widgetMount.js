@@ -13,24 +13,28 @@ define([
     function (Promise, dom, html) {
         'use strict';
         function factory(config) {
-            var mounted, container, mountedWidget, runtime;
+            var mounted = config.node, container, runtime = config.runtime,
+                currentMountId = 0,
+                mountedWidget;
 
-            mounted = config.node;
             if (!mounted) {
                 throw new Error('Cannot create widget mount without a parent node. Pass it as "node"');
             }
-            runtime = config.runtime;
             if (!runtime) {
                 throw new Error('The widget mounter needs a runtime object in order to find and mount widgets.');
             }
-            container = dom.createElement('div');
-            container = mounted.appendChild(container);
+            
+            container = mounted.appendChild(dom.createElement('div'));
             container.id = html.genId();
-
+            
             function unmount() {
                 return Promise.try(function () {
+                    // TODO make no assumptions about what is mounted, just 
+                    // unmount anything we find...
+                    var widget;
                     if (mountedWidget) {
-                        var widget = mountedWidget.widget;
+                        mountedWidget.promise.cancel();
+                        widget = mountedWidget.widget;
                         return Promise.try(function () {
                             return widget.stop && widget.stop();
                         })
@@ -38,96 +42,81 @@ define([
                                 return widget.detach && widget.detach();
                             })
                             .then(function () {
+                                if (mountedWidget.container) {
+                                    try {
+                                        container.removeChild(mountedWidget.container);
+                                    } catch (ex) {
+                                        console.error('Error removing mounted widget');
+                                        console.error(ex);
+                                    }
+                                }
+                            })
+                            .then(function () {
                                 return widget.destroy && widget.destroy();
+                            })
+                            .catch(function (err) {
+                                // ignore errors while unmounting widgets.
+                                console.error('ERROR unmounting widget');
+                                console.error(err);
+                                return null;
                             })
                             .finally(function () {
-                                mountedWidget = undefined;
+                                mountedWidget = null;
                             });
-                    } else {
-                        // ignore
-                        return null;
                     }
+                    return null;
                 });
             }
+            
             function mount(widgetId, params) {
-                return Promise.try(function () {
-                    return runtime.getService('widget').makeWidget(widgetId, {});
+                // We create the widget mount object first, in order to be 
+                // able to attache its mounting promise to itself. This is what
+                // allows us to interrupt it if the route changes and we need
+                // to unmount before it is finished.
+                mountedWidget = {
+                    mountId: currentMountId,
+                    id: html.genId(),
+                    widget: null,
+                    container: null
+                };
+                mountedWidget.promise = Promise.try(function () {
+                    // Make an instance of the requested widget.
+                    return runtime.service('widget').makeWidget(widgetId, {});
                 })
                     .then(function (widget) {
-                        if (widget === undefined) {
+                        // Wrap it in a mount object to help manage it.
+                        if (!widget) {
                             throw new Error('Widget could not be created: ' + widgetId);
                         }
-                        mountedWidget = {
-                            id: html.genId(),
-                            widget: widget,
-                            container: null,
-                            state: 'created'
-                        };
+                        mountedWidget.widget = widget;
                         return [widget, widget.init && widget.init()];
                     })
                     .spread(function (widget) {
-                        var c = dom.createElement('div');
-                        c.id = mountedWidget.id;
-                        container.innerHTML = '';
-                        dom.append(container, c);
-                        mountedWidget.container = c;
-                        return [widget, widget.attach && widget.attach(c)];
+                        // Give it a container and attach it to it.
+                        mountedWidget.container = container.appendChild(dom.createElement('div'));
+                        return [widget, widget.attach && widget.attach(mountedWidget.container)];
                     })
                     .spread(function (widget) {
+                        // Start it if applicable.
                         return [widget, widget.start && widget.start(params)];
                     })
                     .spread(function (widget) {
-                        return widget.run && widget.run(params);
+                        // Run it if applicable
+                        return [widget, widget.run && widget.run(params)];
+                    })
+                    .spread(function (widget) {
+                        return widget;
                     });
+                return mountedWidget.promise;
             }
+
             function mountWidget(widgetId, params) {
-                // stop the old one
-                // Stop and unmount current widget.
-                return Promise.try(function () {
-                    if (mountedWidget) {
-                        var widget = mountedWidget.widget;
-                        return Promise.try(function () {
-                            return widget.stop && widget.stop();
-                        })
-                            .then(function () {
-                                return widget.detach && widget.detach();
-                            })
-                            .then(function () {
-                                return widget.destroy && widget.destroy();
-                            });
-                    }
-                })
+                return unmount()
                     .then(function () {
-                        // return runtime.ask('widgetManager', 'makeWidget', widgetId);
-                        return runtime.getService('widget').makeWidget(widgetId, {});
-                    })
-                    .then(function (widget) {
-                        if (widget === undefined) {
-                            throw new Error('Widget could not be created: ' + widgetId);
-                        }
-                        mountedWidget = {
-                            id: html.genId(),
-                            widget: widget,
-                            container: null,
-                            state: 'created'
-                        };
-                        return [widget, widget.init && widget.init()];
-                    })
-                    .spread(function (widget) {
-                        var c = dom.createElement('div');
-                        c.id = mountedWidget.id;
-                        container.innerHTML = '';
-                        dom.append(container, c);
-                        mountedWidget.container = c;
-                        return [widget, widget.attach && widget.attach(c)];
-                    })
-                    .spread(function (widget) {
-                        return [widget, widget.start && widget.start(params)];
-                    })
-                    .spread(function (widget) {
-                        return widget.run && widget.run(params);
+                        return mount(widgetId, params);
                     });
             }
+
             return {
                 mountWidget: mountWidget,
                 mount: mount,
