@@ -218,6 +218,12 @@ define(['jquery'],
                             };
                         })(cfg.onkeyup));
                     }
+                    form.on('submit', function (e) {
+                        e.preventDefault();
+                        if (cfg.onsubmit) {
+                            cfg.onsubmit(e);
+                        }
+                    });
                     if (cfg.place === 'end') {
                         this.container.append(form);
                     } else {
