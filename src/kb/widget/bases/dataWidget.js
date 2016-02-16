@@ -20,19 +20,20 @@ define([
                 params = State.make(),
                 paramDefaults = config.defaults,
                 places = {},
-		rendered, error;
+                rendered, error,
+                widgetClass, widgetIcon;
 
             setStatus('new');
 
             if (!runtime) {
-	    	// Get fancier later.
-		setError({
-	          type: 'ArgumentError',
-                  reason: 'RuntimeMissing',
-                  blame: 'dataWidget',
-                  message: 'The runtime argument was not provided'
-		});
-		throw new Error('The runtime argument was not provided');
+                // Get fancier later.
+                setError({
+                    type: 'ArgumentError',
+                    reason: 'RuntimeMissing',
+                    blame: 'dataWidget',
+                    message: 'The runtime argument was not provided'
+                });
+                throw new Error('The runtime argument was not provided');
                 //throw {
                 //    type: 'ArgumentError',
                 //    reason: 'RuntimeMissing',
@@ -40,6 +41,9 @@ define([
                 //    message: 'The runtime argument was not provided'
                 //};
             }
+            
+            widgetClass = config.class;
+            widgetIcon = config.icon; 
 
             // The hooks for widget objects.
             function addHook(name, fun) {
@@ -93,7 +97,7 @@ define([
             function setClean() {
                 return state.setClean();
             }
-            
+
             // STATUS
             function setStatus(newStatus) {
                 status = newStatus;
@@ -101,8 +105,8 @@ define([
             function getStatus() {
                 return status;
             }
-            
-            
+
+
             // Just params
             function setParam(prop, value) {
                 params.set(prop, value);
@@ -113,12 +117,12 @@ define([
             function hasParam(prop) {
                 return params.has(prop);
             }
-            
+
             // Direct interaction with DOM, discouraged, but sometimes necessary.
             function getDomNode() {
                 return container;
             }
-            
+
 
             // EVENTS
             function recv(channel, message, handler) {
@@ -129,17 +133,75 @@ define([
             }
 
             // DOM EVENTS
-            function addDomEvent(type, handler, id, data) {
-                return domEvent.addEvent(type, handler, id, data);
+
+            function makeListener(config) {
+                var delegatedListeners = [];
+
+                function handler(e) {
+                    delegatedListeners.forEach(function (listener) {
+                        try {
+//                            console.log(listener.selector);
+//                            console.log(e.target.matches(listener.selector));
+//                            console.log(e.target.id);
+                            if (e.target.matches(listener.selector)) {
+                                listener.handler(e);
+                            }
+                        } catch (ex) {
+                            console.error('Error handling listener');
+                            console.error(ex);
+                        }
+                    });
+                }
+
+                function addDelegatedListener(eventSpec) {
+                    delegatedListeners.push(eventSpec);
+                }
+
+                return {
+                    type: config.type,
+                    added: new Date(),
+                    delegatedListeners: delegatedListeners,
+                    addEvent: addDelegatedListener,
+                    handler: handler
+                };
             }
-            function attachDomEvent(type, handler, selector, data) {
-                return domEvent.attachEvent(type, handler, selector, data);
+
+
+            // Listener is now on the entire container. This way we don't need
+            // to bother with installing and uninstalling listeners on nodes
+            // as they are created and removed, and can have more interesting
+            // behavior
+            // I.E. delegated listeners.
+            var eventTypesListenedFor = {};
+            function attachListeners() {
+                Object.keys(eventTypesListenedFor).forEach(function (type) {
+                    var listener = eventTypesListenedFor[type];
+                    container.addEventListener(listener.type, listener.handler, true);
+                });
             }
-            function attachDomEvents() {
-                domEvent.attachEvents();
+            function addListener(type) {
+                var listener = getListener(type);
+                if (!listener) {
+                    listener = makeListener({type: type});
+                    // TODO: how to best handle use capture? (3rd param)
+                    // container.addEventListener(type, listener.handler, false);
+                    eventTypesListenedFor[type] = listener;
+                }
+                return listener;
             }
-            function detachDomEvents() {
-                domEvent.detachEvents();
+            function getListener(type) {
+                return eventTypesListenedFor[type];
+            }
+            function removeListener() {
+
+            }
+
+            function addDomEvent(event) {
+                var listener = getListener(event.type);
+                if (!listener) {
+                    listener = addListener(event.type);
+                }
+                listener.addEvent(event);
             }
 
             // Object construction setup
@@ -152,7 +214,7 @@ define([
 
             if (config && config.events) {
                 config.events.forEach(function (event) {
-                    attachDomEvent(event);
+                    addDomEvent(event);
                 });
             }
 
@@ -164,22 +226,18 @@ define([
                 send: send,
                 getConfig: getConfig,
                 hasConfig: hasConfig,
-                
                 getState: getState,
                 setState: setState,
                 hasState: hasState,
-                
                 getParam: getParam,
                 setParam: setParam,
                 hasParam: hasParam,
-                
                 getPlace: getPlace,
-                
                 getDomNode: getDomNode,
                 get: getState,
                 set: setState,
                 addDomEvent: addDomEvent,
-                attachDomEvent: attachDomEvent,
+                // attachDomEvent: attachDomEvent,
                 setTitle: setTitle,
                 runtime: runtime
             });
@@ -190,9 +248,9 @@ define([
                 setClean();
                 var error = getState('error');
                 if (error) {
-                    console.log('setting error: '); 
+                    console.log('setting error: ');
                     console.log(error);
-                    var content = html.makeObjectTable(error, Object.keys(error)); 
+                    var content = html.makeObjectTable(error, Object.keys(error));
                     setContent('error', content);
                     setContent('body', '');
                 }
@@ -207,8 +265,8 @@ define([
                     // For now we assume that rendering blows away dom events
                     // and re-initializes them.
                     // Let us get more subtle later.
-                    detachDomEvents();
-                    
+                    // detachDomEvents();
+
                     // If we are in an error state, do the special error rendering,
                     // that's all.
                     if (isError()) {
@@ -250,7 +308,8 @@ define([
                             }
                         })
                         .then(function () {
-                            attachDomEvents();
+                            // attachDomEvents();
+                            return null;
                         });
                 });
             }
@@ -286,7 +345,7 @@ define([
                     });
             }
 
-            function buildLayout() {
+            function buildLayoutx() {
                 var div = html.tag('div'),
                     span = html.tag('span'),
                     id = html.genId(),
@@ -304,6 +363,35 @@ define([
                     content: content
                 };
             }
+
+            function buildLayout() {
+                var div = html.tag('div'),
+                    span = html.tag('span'),
+                    id = html.genId(),
+                    content = div({class: 'panel panel-default ' + widgetClass}, [
+                        div({class: 'panel-heading'}, [
+                            div({class: 'kb-row'}, [
+                                div({class: '-col -span-8'}, [
+                                    span({class: 'fa pull-left fa-' + widgetIcon, style: {fontSize: '150%', paddingRight: '10px'}}),
+                                    span({class: 'panel-title', style: {verticalAlign: 'middle'}, dataElement: 'title'})
+                                ]),
+                                div({class: '-col -span-4', style: {textAlign: 'right'}}, [
+                                    div({class: 'btn-group', dataPlaceholder: 'buttons'})
+                                ])
+                            ])
+                        ]),
+                        div({class: 'panel-body'}, [                            
+                            div({dataElement: 'body'}),
+                            div({dataElement: 'error'})
+                        ])
+                    ]);
+                return {
+                    id: id,
+                    content: content
+                };
+            }
+
+
             function buildCollapseLayout(config) {
                 var div = html.tag('div'),
                     span = html.tag('span'),
@@ -357,7 +445,7 @@ define([
             function getNode(element) {
                 return container.querySelector('[data-element="' + element + '"]');
             }
-            
+
             // Places
             function getPlace(name) {
                 return places[name];
@@ -382,6 +470,7 @@ define([
                 return Promise.try(function () {
                     mount = node;
                     container = dom.append(mount, dom.createElement('div'));
+                    attachListeners();
                     container.innerHTML = getLayout().content;
                     if (hasHook('attach')) {
                         var promises = getHook('attach').map(function (fun) {
@@ -391,24 +480,25 @@ define([
                         });
                         return Promise.all(promises)
                             .then(function () {
-                                attachDomEvents();
+                                // attachDomEvents();
+                                return null;
                             });
                     } else if (hasHook('layout')) {
                         var layout = getHook('layout')[0];
                         return Promise.try(function () {
                             return layout.call(internalApi);
                         })
-                        .then(function (result) {
-                            setContent('body', result.content);                        
-                            Object.keys(result.places).forEach(function (name) {
-                                var place = result.places[name],
-                                    node;
-                                if (place.id) {
-                                    place.node = document.getElementById(place.id);                                    
-                                }
-                                places[name] = place;
+                            .then(function (result) {
+                                setContent('body', result.content);
+                                Object.keys(result.places).forEach(function (name) {
+                                    var place = result.places[name],
+                                        node;
+                                    if (place.id) {
+                                        place.node = document.getElementById(place.id);
+                                    }
+                                    places[name] = place;
+                                });
                             });
-                        });
                     }
                 });
             }
@@ -421,7 +511,7 @@ define([
                     return html.makeTableRotated({
                         class: 'table table-striped',
                         columns: ['Name', 'Code', 'Message', 'Source Error'],
-                        rows: [[error.error.name, error.error.code, error.error.message, error.error.error]] 
+                        rows: [[error.error.name, error.error.code, error.error.message, error.error.error]]
                     });
                 } else {
                     return 'not a data access error';
@@ -491,14 +581,14 @@ define([
                                 reason: 'Unknown',
                                 message: 'Error encountered fetching data',
                                 description: renderDataAccessError(err),
-                                data: err 
+                                data: err
                             });
                         });
                 });
             }
             function stop() {
                 return Promise.try(function () {
-                    listeners.forEach(function(listener) {
+                    listeners.forEach(function (listener) {
                         if (listener) {
                             runtime.drop(listener);
                         }
@@ -528,7 +618,8 @@ define([
                         });
                         return Promise.all(promises)
                             .then(function () {
-                                detachDomEvents();
+                                // detachDomEvents();
+                                return null;
                             });
                     }
                 });
