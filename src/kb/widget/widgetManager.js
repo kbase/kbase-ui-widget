@@ -79,7 +79,7 @@ define([
                         runtime: runtime,
                         widget: {
                             module: widget.module,
-                            jquery_object: config.jqueryName,
+                            jquery_object: widget.config.jqueryName,
                             panel: config.panel,
                             title: widget.title
                         }
