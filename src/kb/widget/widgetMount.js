@@ -23,10 +23,10 @@ define([
             if (!runtime) {
                 throw new Error('The widget mounter needs a runtime object in order to find and mount widgets.');
             }
-            
+
             container = mounted.appendChild(dom.createElement('div'));
             container.id = html.genId();
-            
+
             function unmount() {
                 return Promise.try(function () {
                     // TODO make no assumptions about what is mounted, just 
@@ -67,7 +67,7 @@ define([
                     return null;
                 });
             }
-            
+
             function mount(widgetId, params) {
                 // We create the widget mount object first, in order to be 
                 // able to attache its mounting promise to itself. This is what
@@ -89,20 +89,20 @@ define([
                             throw new Error('Widget could not be created: ' + widgetId);
                         }
                         mountedWidget.widget = widget;
-                        return [widget, widget.init && widget.init()];
+                        return Promise.all([widget, widget.init && widget.init()]);
                     })
                     .spread(function (widget) {
                         // Give it a container and attach it to it.
                         mountedWidget.container = container.appendChild(dom.createElement('div'));
-                        return [widget, widget.attach && widget.attach(mountedWidget.container)];
+                        return Promise.all([widget, widget.attach && widget.attach(mountedWidget.container)]);
                     })
                     .spread(function (widget) {
                         // Start it if applicable.
-                        return [widget, widget.start && widget.start(params)];
+                        return Promise.all([widget, widget.start && widget.start(params)]);
                     })
                     .spread(function (widget) {
                         // Run it if applicable
-                        return [widget, widget.run && widget.run(params)];
+                        return Promise.all([widget, widget.run && widget.run(params)]);
                     })
                     .spread(function (widget) {
                         return widget;
