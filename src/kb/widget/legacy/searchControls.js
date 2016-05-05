@@ -32,8 +32,9 @@
 
 define([
     'jquery', 
-    'bootstrap', 
-    'kb/widget/legacy/widget'
+    'bootstrap',
+    'css!font_awesome',
+    './widget'
 ], function ($) {
 
     $.KBWidget({
@@ -43,7 +44,7 @@ define([
             controls: [],
             onMouseover: true,
             position: 'top',
-            type: 'floating',
+            type: 'floating'
         },
         init: function (options) {
 
@@ -60,7 +61,7 @@ define([
 
             var restoreMouseOver = this.options.onMouseover;
 
-            if (this.options.type == 'floating') {
+            if (this.options.type === 'floating') {
                 $elem.css('position', 'relative');
             }
             var $filterbox =
@@ -72,7 +73,7 @@ define([
                     .addClass('form-control')
                     .attr('id', 'searchBox')
                     .on('keyup', function (e) {
-                        if (e.keyCode == 27) {
+                        if (e.keyCode === 27) {
                             $sc.value(undefined);
                         }
 
@@ -123,7 +124,7 @@ define([
                     )
                 ;
 
-            if (this.options.type == 'floating') {
+            if (this.options.type === 'floating') {
                 $filterbox
                     .css('right', '0px')
                     .css('top', '0px')
@@ -168,7 +169,7 @@ define([
                 this.data('searchBox').val(newVal);
             }
             return this.data('searchBox').val();
-        },
+        }
     });
 
 });

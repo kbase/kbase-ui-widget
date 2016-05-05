@@ -30,12 +30,12 @@
  );
  */
 
-define(
-    [
-        'jquery',
-        'bootstrap',
-        'kb/widget/legacy/widget'
-    ],
+define([
+    'jquery',
+    'bootstrap',
+    'css!font_awesome',
+    './widget'
+],
     function ($) {
 
         $.KBWidget({
@@ -46,7 +46,7 @@ define(
                 onMouseover: true,
                 position: 'top',
                 type: 'floating',
-                posOffset: '0px',
+                posOffset: '0px'
             },
             init: function (options) {
 

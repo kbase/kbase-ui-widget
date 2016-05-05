@@ -54,7 +54,7 @@
 
 define([
     'jquery',
-    'kb/widget/legacy/widget',
+    './widget',
 ], function ($) {
     $.KBWidget({
         name: "kbasePrompt",
