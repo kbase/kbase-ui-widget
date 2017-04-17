@@ -31,15 +31,15 @@
  */
 
 define([
-    'jquery', 
+    'jquery',
     'bootstrap',
     'css!font_awesome',
     './widget'
 ], function ($) {
 
     $.KBWidget({
-        name: "kbaseSearchControls",
-        version: "1.0.0",
+        name: 'kbaseSearchControls',
+        version: '1.0.0',
         options: {
             controls: [],
             onMouseover: true,
@@ -94,7 +94,7 @@ define([
                         $sc.options.searchCallback.call(this, e, value, $sc.options.context);
 
                     })
-                    )
+                )
                 .append(
                     $.jqElem('span')
                     .addClass('input-group-btn')
@@ -106,7 +106,7 @@ define([
                             $.jqElem('i')
                             .attr('id', 'searchIcon')
                             .addClass('fa fa-search')
-                            )
+                        )
                         .on('click', function (e) {
 
                             if ($sc.data('searchIcon').hasClass('fa-times')) {
@@ -120,9 +120,8 @@ define([
                             $sc.options.searchCallback.call(this, e, $sc.value(), $sc.options.context);
 
                         })
-                        )
                     )
-                ;
+                );
 
             if (this.options.type === 'floating') {
                 $filterbox
@@ -154,12 +153,10 @@ define([
                         }
                         $sc.data('searchBox').blur();
                     }
-                )
-                ;
+                );
             if (this.options.onMouseover) {
                 $filterbox.hide();
             }
-            ;
 
             return this;
 

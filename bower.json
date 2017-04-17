@@ -11,15 +11,14 @@
     ],
     "dependencies": {
         "bluebird": "^3.0.0",
-        "kbase-common-js": "^1.0.0",
+        "kbase-common-js": "^2.5.0",
         "jquery": "^2.1.0",
         "bootstrap": "^3.3.0",
         "handlebars": "^4.0.0",
         "underscore": "^1.8.0",
         "d3": "^3.5.0"
     },
-    "devDependencies": {
-    },
+    "devDependencies": {},
     "repository": {
         "type": "git",
         "url": "git://github.com/kbase/kbase-ui-widget"

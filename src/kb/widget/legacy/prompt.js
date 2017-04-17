@@ -57,8 +57,8 @@ define([
     './widget',
 ], function ($) {
     $.KBWidget({
-        name: "kbasePrompt",
-        version: "1.0.0",
+        name: 'kbasePrompt',
+        version: '1.0.0',
         options: {
             controls: ['cancelButton', 'okayButton'],
             modalClass: 'fade',
@@ -72,7 +72,7 @@ define([
 
         },
         openPrompt: function () {
-            this.dialogModal().modal({'keyboard': this.options.keyboard});
+            this.dialogModal().modal({ 'keyboard': this.options.keyboard });
         },
         closePrompt: function () {
             this.dialogModal().modal('hide');
@@ -119,18 +119,18 @@ define([
                                 .attr('data-dismiss', 'modal')
                                 .attr('aria-hidden', 'true')
                                 .append('x\n')
-                                )
+                            )
                             .append(
                                 $('<h3></h3>')
                                 .addClass('modal-title')
                                 .attr('id', 'title')
-                                )
                             )
+                        )
                         .append(
                             $('<div></div>')
                             .attr('class', 'modal-body')
                             .attr('id', 'body')
-                            )
+                        )
                         .append(
                             $('<div></div>')
                             .attr('class', 'modal-footer')
@@ -143,25 +143,24 @@ define([
                                     .addClass('col-sm-5')
                                     .addClass('text-left')
                                     .attr('id', 'footer')
-                                    )
+                                )
                                 .append(
                                     $('<div></div>')
                                     .addClass('col-sm-7')
                                     .attr('id', 'controls')
                                     .css('white-space', 'nowrap')
-                                    )
                                 )
                             )
                         )
                     )
-                ;
+                );
 
             $dialogModal.unbind('keypress');
             $dialogModal.keypress(function (e) {
                 if (e.keyCode === 13) {
                     e.stopPropagation();
                     e.preventDefault();
-                    $('a:last', $dialogModal).trigger("click");
+                    $('a:last', $dialogModal).trigger('click');
                 }
             });
 
@@ -206,8 +205,7 @@ define([
                                 e.stopPropagation();
                                 val.callback.call(this, e, $prompt);
                             }
-                        )
-                        ;
+                        );
 
                     if (val.id) {
                         $button.attr('id', val.id);
@@ -234,11 +232,11 @@ define([
                                     $firstField = $(val);
                                 }
 
-                                if ($(val).is("input") && $(val).val() === undefined) {
+                                if ($(val).is('input') && $(val).val() === undefined) {
                                     $(val).focus();
                                     selection = true;
                                     return;
-                                } else if ($(val).is("textarea") && $(val).text().length === 0) {
+                                } else if ($(val).is('textarea') && $(val).text().length === 0) {
                                     $(val).focus();
                                     selection = true;
                                     return;
@@ -251,8 +249,8 @@ define([
                         }
                     },
                     this
-                    )
-                );
+                )
+            );
 
             /*$dialogModal.find('input[type=text],input[type=password]').last().keypress(
              $.proxy(

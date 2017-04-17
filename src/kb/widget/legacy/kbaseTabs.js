@@ -40,14 +40,14 @@
  */
 
 define([
-    'jquery', 
-    './widget', 
+    'jquery',
+    './widget',
     'bootstrap'
 ], function ($) {
     'use strict';
     $.KBWidget({
-        name: "kbaseTabs",
-        version: "1.0.0",
+        name: 'kbaseTabs',
+        version: '1.0.0',
         _accessors: ['tabsHeight'],
         options: {
             tabPosition: 'top',
@@ -112,7 +112,7 @@ define([
                 $tab.css('padding', '3px');
             }
 
-            var $that = this;   //thanks bootstrap! You suck!
+            var $that = this; //thanks bootstrap! You suck!
 
             var $nav = $('<li></li>')
                 .css('white-space', 'nowrap')
@@ -173,8 +173,8 @@ define([
                                 this.deletePrompt(tab.tab);
                             }
                         }, this))
-                        )
-                    );
+                    )
+                );
 
             if (!tab.canDelete) {
                 $nav.find('button').remove();
