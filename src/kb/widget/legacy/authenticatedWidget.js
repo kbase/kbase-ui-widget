@@ -1,13 +1,15 @@
 define([
     'jquery',
     './widget'
-], function ($) {
+], function (
+    $
+) {
     'use strict';
     $.KBWidget({
-        name: "kbaseAuthenticatedWidget",
-        version: "1.0.0",
+        name: 'kbaseAuthenticatedWidget',
+        version: '1.0.0',
         _accessors: [
-            {name: 'auth', setter: 'setAuth'},
+            { name: 'auth', setter: 'setAuth' },
             'sessionId',
             'authToken',
             'user_id',

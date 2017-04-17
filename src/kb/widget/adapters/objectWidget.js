@@ -1,22 +1,20 @@
-/*global
- define, require
- */
-/*jslint
- browser: true,
- white: true
- */
 define([
     'bluebird',
     'jquery',
-    'kb/common/utils',
-    'kb/common/dom'
-], function (Promise, $, Utils, dom) {
+    'kb_common/utils',
+    'kb_common/dom'
+], function (
+    Promise,
+    $,
+    Utils,
+    dom
+) {
     'use strict';
 
     function adapter(config) {
         var widget, mount, container, initConfig,
-                runtime = config.adapterConfig.runtime,
-                module = config.widgetDef.module;
+            runtime = config.adapterConfig.runtime,
+            module = config.widgetDef.module;
 
         if (!runtime) {
             throw {
@@ -42,6 +40,7 @@ define([
                 });
             });
         }
+
         function attach(node) {
             return new Promise(function (resolve) {
                 mount = node;
@@ -50,6 +49,7 @@ define([
                 resolve();
             });
         }
+
         function start(params) {
             return new Promise(function (resolve) {
                 // The config is supplied by the caller, but we add 
@@ -74,16 +74,19 @@ define([
                 resolve();
             });
         }
+
         function stop() {
             return Promise.try(function () {
                 widget.stop();
             });
         }
+
         function detach() {
             return Promise.try(function () {
                 mount.removeChild(container);
             });
         }
+
         function destroy() {
             // no method on the object widget to call.
         }

@@ -1,15 +1,12 @@
-/*global
- define, console
- */
-/*jslint
- browser: true,
- white: true
- */
 define([
-    'kb/common/html',
-    'kb/common/dom',
+    'kb_common/html',
+    'kb_common/dom',
     'bluebird'
-], function (html, dom, Promise) {
+], function (
+    html,
+    dom,
+    Promise
+) {
     'use strict';
 
     function factory(cfg) {
@@ -39,19 +36,6 @@ define([
                 fun(temp);
             }
         }
-        function mapArrays(arrays, fun) {
-            var result = [],
-                len = arrays[0].length,
-                i, j, temp;
-            for (i = 0; i < len; i += 1) {
-                temp = [];
-                for (j = 0; j < arrays.length; j += 1) {
-                    temp.push(arrays[j][i]);
-                }
-                result.push(fun(temp));
-            }
-            return result;
-        }
 
         function addWidget(widgetId, config) {
             config = config || {};
@@ -76,8 +60,8 @@ define([
 
         function makeWidgets() {
             return Promise.all(widgets.map(function (rec) {
-                return rec.widgetMaker;
-            }))
+                    return rec.widgetMaker;
+                }))
                 .then(function (results) {
                     // now we have the widget instance list.
                     eachArrays([widgets, results], function (recs) {

@@ -236,9 +236,9 @@ define([
             var newVal;
 
             if (accessors.getter === 'checked') {
-                newVal = this.is(':checked')
-                    ? true
-                    : false;
+                newVal = this.is(':checked') ?
+                    true :
+                    false;
             } else {
                 newVal = this[accessors.getter]();
             }
@@ -325,17 +325,17 @@ define([
         $target.on(
             event,
             makeBindingCallback(this, $target, attribute, transformers, accessors)
-            );
+        );
 
         $(this).on(
             'blur.kbaseBinding',
             makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-            );
+        );
 
         $(this).on(
             'focus.kbaseBinding',
             makeBindingFocusCallback(this, transformers, accessors)
-            );
+        );
 
         var tagName = $(this).prop('tagName').toLowerCase();
         if (tagName.match(/^(input)$/)) {
@@ -389,17 +389,17 @@ define([
         $target.off(
             event,
             makeBindingCallback(this, $target, attribute, transformers, accessors)
-            );
+        );
 
         $(this).off(
             'blur.kbaseBinding',
             makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-            );
+        );
 
         $(this).off(
             'focus.kbaseBinding',
             makeBindingBlurCallback(this, transformers, accessors)
-            );
+        );
 
 
         var tagName = $(this).prop('tagName').toLowerCase();
@@ -407,12 +407,12 @@ define([
             $(this).off(
                 'keypress.kbaseBinding',
                 makeBindingEnterCallback(this, $target, attribute, transformers, accessors)
-                );
+            );
             if ($(this).attr('type') === 'checkbox') {
                 $(this).off(
                     'change.kbaseBinding',
                     makeBindingBlurCallback(this, $target, attribute, transformers, accessors)
-                    );
+                );
             }
         }
 
@@ -426,29 +426,26 @@ define([
     if (window.KBase === undefined) {
         KBase = window.KBase = {
             _functions: {
-                getter:
-                    function (name) {
-                        return function () {
-                            return this.valueForKey(name);
-                        };
-                    },
-                setter:
-                    function (name) {
-                        return function (newVal) {
-                            return this.setValueForKey(name, newVal);
-                        };
-                    },
-                getter_setter:
-                    function (name) {
+                getter: function (name) {
+                    return function () {
+                        return this.valueForKey(name);
+                    };
+                },
+                setter: function (name) {
+                    return function (newVal) {
+                        return this.setValueForKey(name, newVal);
+                    };
+                },
+                getter_setter: function (name) {
 
-                        return function (newVal) {
-                            if (arguments.length === 1) {
-                                return this.setValueForKey(name, newVal);
-                            } else {
-                                return this.valueForKey(name);
-                            }
-                        };
-                    }
+                    return function (newVal) {
+                        if (arguments.length === 1) {
+                            return this.setValueForKey(name, newVal);
+                        } else {
+                            return this.valueForKey(name);
+                        }
+                    };
+                }
             }
         };
     }
@@ -465,7 +462,7 @@ define([
     }
 
     $.jqElem = function (tagName) {
-        var tag = "<" + tagName + ">";
+        var tag = '<' + tagName + '>';
         if (!tag.match(/^(area|base|br|col|command|embed|hr|img|input|keygen|link|meta|param|source|track)/)) {
             tag += '</' + tagName + '>';
         }
@@ -529,8 +526,8 @@ define([
         if (parent) {
             var pWidget = widgetRegistry[parent];
             if (pWidget === undefined)
-                throw new Error("Parent widget is not registered. Cannot find " + parent
-                    + " for " + name);
+                throw new Error('Parent widget is not registered. Cannot find ' + parent +
+                    ' for ' + name);
             subclass(Widget, pWidget);
         }
 
@@ -581,7 +578,7 @@ define([
 
                 }, this)
 
-                );
+            );
 
             defCopy._accessors = undefined;
         }
@@ -591,16 +588,16 @@ define([
 
         for (var prop in defCopy) {
             //hella slick closure based _super method adapted from JQueryUI.
-//*
+            //*
 
             if ($.isFunction(defCopy[prop])) {
 
                 Widget.prototype[prop] = (function (methodName, method) {
                     var _super = function () {
-                        throw "No parent method defined! Play by the rules!";
+                        throw 'No parent method defined! Play by the rules!';
                     };
                     var _superMethod = function () {
-                        throw "No parent method defined! Play by the rules!";
+                        throw 'No parent method defined! Play by the rules!';
                     };
 
                     if (parent) {
@@ -629,7 +626,7 @@ define([
                 })(prop, defCopy[prop]);
 
             } else {
-//*/
+                //*/
                 Widget.prototype[prop] = defCopy[prop];
             }
         }
@@ -661,7 +658,7 @@ define([
                     return Widget.prototype[method].apply(
                         this.data(name),
                         Array.prototype.slice.call(arguments, 1)
-                        );
+                    );
                 } else if (typeof method === 'object' || !method) {
                     //return this.data(name).init( arguments );
                     var args = arguments;
@@ -773,6 +770,7 @@ define([
         },
         callAfterInit: function (func) {
             var self = this;
+
             function delayer() {
                 if (self._init) {
                     func();
@@ -792,9 +790,9 @@ define([
             this._attributes = {};
 
             this.runtime = args.runtime;
-//                if (!this.runtime) {
-//                    throw new Error('The required runtime option was not provided to the widget');
-//                }
+            //                if (!this.runtime) {
+            //                    throw new Error('The required runtime option was not provided to the widget');
+            //                }
 
             var opts = $.extend(true, {}, this.options);
             this.options = $.extend(true, {}, opts, args);
@@ -819,7 +817,7 @@ define([
                     $.proxy(function () {
                         this.appendUI(this.$elem);
                     }, this)
-                    );
+                );
             }
 
             return this;
@@ -846,7 +844,7 @@ define([
             this.$elem.append($res);
         },
         templateFailure: function (res) {
-            this.dbg("Template load failure");
+            this.dbg('Template load failure');
             this.dbg(res);
         },
         templateContent: function () {
@@ -864,38 +862,36 @@ define([
 
             return this;
         },
-        valueForKey:
-            function (attribute) {
-                //this.trigger('didAccessValueFor' + name + '.kbase');
-                return this._attributes[attribute];
-            },
-        setValueForKey:
-            function (attribute, newVal) {
+        valueForKey: function (attribute) {
+            //this.trigger('didAccessValueFor' + name + '.kbase');
+            return this._attributes[attribute];
+        },
+        setValueForKey: function (attribute, newVal) {
 
-                var triggerValues = undefined;
-                var oldVal = this.valueForKey(attribute);
+            var triggerValues = undefined;
+            var oldVal = this.valueForKey(attribute);
 
-                if (newVal !== oldVal) {
+            if (newVal !== oldVal) {
 
-                    var willChangeNote = willChangeNoteForName(attribute);
+                var willChangeNote = willChangeNoteForName(attribute);
 
-                    triggerValues = {
-                        oldValue: oldVal,
-                        newValue: newVal
-                    };
-                    this.trigger(willChangeNote, triggerValues);
+                triggerValues = {
+                    oldValue: oldVal,
+                    newValue: newVal
+                };
+                this.trigger(willChangeNote, triggerValues);
 
-                    this._attributes[attribute] = triggerValues.newValue;
+                this._attributes[attribute] = triggerValues.newValue;
 
-                    if (triggerValues.newValue !== oldVal) {
-                        var didChangeNote = didChangeNoteForName(attribute);
+                if (triggerValues.newValue !== oldVal) {
+                    var didChangeNote = didChangeNoteForName(attribute);
 
-                        this.trigger(didChangeNote, triggerValues);
-                    }
+                    this.trigger(didChangeNote, triggerValues);
                 }
+            }
 
-                return this.valueForKey(attribute);
-            },
+            return this.valueForKey(attribute);
+        },
         setValuesForKeys: function (obj) {
             var objCopy = $.extend({}, obj);
 
@@ -1005,7 +1001,7 @@ define([
                 attribute,
                 $target,
                 this.makeObserverCallback($target, attribute, callback)
-                );
+            );
 
         },
         unobserve: function ($target, attribute, callback) {
@@ -1013,7 +1009,7 @@ define([
                 attribute,
                 $target,
                 this.makeObserverCallback($target, attribute, callback)
-                );
+            );
         },
         /*
          kb_bind : function($target, attribute, callback) {
@@ -1027,7 +1023,7 @@ define([
          },
          */
 
-//*
+        //*
         kb_bind: function ($target, attribute, callback) {
             var event = didChangeNoteForName(attribute);
             this.observe($target, event, callback);

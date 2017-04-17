@@ -45,12 +45,12 @@
  */
 define([
     'jquery',
-    'kb/widget/legacy/widget'
+    './widget'
 ], function ($) {
     'use strict';
     $.KBWidget({
-        name: "kbTabs",
-        version: "1.0.0",
+        name: 'kbTabs',
+        version: '1.0.0',
         init: function (options) {
             this._super(options);
             if (!options) {
@@ -171,7 +171,7 @@ define([
             // don't animate intial tabs
             if (options.tabs) {
                 options.tabs.forEach(function (tab) {
-                    this.addTab($.extend(tab, {animate: false}));
+                    this.addTab($.extend(tab, { animate: false }));
                 }.bind(this));
             }
 

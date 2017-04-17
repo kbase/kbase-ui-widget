@@ -59,8 +59,8 @@ define([
 ], function ($) {
     'use strict';
     $.KBWidget({
-        name: "kbaseTable",
-        version: "1.0.0",
+        name: 'kbaseTable',
+        version: '1.0.0',
         _accessors: ['numRows', 'sortButtons', 'visRowString'],
         options: {
             sortable: false,
@@ -90,9 +90,9 @@ define([
             if (cell.label !== undefined) {
                 return cell.label;
             }
-            value = typeof cell !== 'object'
-                ? cell
-                : cell.value;
+            value = typeof cell !== 'object' ?
+                cell :
+                cell.value;
 
             if (cell.type === 'th') {
                 value = value.replace(/(?:^|\s+)([a-z])/g, function (v) {
@@ -144,7 +144,7 @@ define([
                 $tbl.append(
                     $('<caption></caption>')
                     .append(this.options.caption)
-                    );
+                );
             }
 
             if (struct.header) {
@@ -161,7 +161,7 @@ define([
                     $.proxy(function (idx, header) {
 
                         if (typeof header === 'string') {
-                            header = {value: header};
+                            header = { value: header };
                             struct.header[idx] = header;
                         }
 
@@ -171,8 +171,7 @@ define([
                         var h = header.value;
 
                         var $th = $.jqElem('th')
-                            .append(label)
-                            ;
+                            .append(label);
 
                         if (this.options.resizable) {
                             $th.resizable({
@@ -193,8 +192,7 @@ define([
                                 .css('display', 'none')
                                 .css('float', 'right')
                                 .append($buttonIcon)
-                                .data('shouldHide', true)
-                                ;
+                                .data('shouldHide', true);
                             $button.bind('click', $.proxy(function (e) {
 
                                 var $lastSort = this.data('lastSort');
@@ -233,8 +231,7 @@ define([
                                 }
 
 
-                            }, this))
-                                ;
+                            }, this));
 
                             this.sortButtons()[header.value] = $button;
 
@@ -253,7 +250,7 @@ define([
                         $tr.append($th);
 
                     }, this)
-                    );
+                );
 
                 $thead.append($tr);
                 $tbl.append($thead);
@@ -270,8 +267,7 @@ define([
 
             if (struct.footer) {
                 var $tfoot = $('<tfoot></tfoot>')
-                    .attr('id', 'tfoot')
-                    ;
+                    .attr('id', 'tfoot');
 
                 var $tfootTR = $.jqElem('tr');
                 $tfoot.append($tfootTR);
@@ -290,8 +286,7 @@ define([
                     }
 
                     var $td = $.jqElem('td')
-                        .append(value)
-                        ;
+                        .append(value);
                     if (style) {
                         $td.attr('style', style);
                     }
@@ -337,7 +332,7 @@ define([
                                     $.jqElem('i')
                                     .attr('id', 'leftIcon')
                                     .addClass('fa fa-caret-left')
-                                    )
+                                )
                                 .on('click', function (e) {
                                     var maxRows = $tbl.options.maxVisibleRowIndex || $tbl.numRows();
                                     var minRows = $tbl.options.minVisibleRowIndex || 0;
@@ -356,8 +351,8 @@ define([
                                     $tbl.displayRows();
 
                                 })
-                                )
                             )
+                        )
                         /*.append(
                          $.jqElem('span')
                          .attr('id', 'visRecords')
@@ -368,7 +363,7 @@ define([
                             .attr('id', 'visRecords')
                             .addClass('input-group-addon')
                             .kb_bind(this, 'visRowString')
-                            )
+                        )
                         .append(
                             $.jqElem('span')
                             .addClass('input-group-btn')
@@ -380,7 +375,7 @@ define([
                                     $.jqElem('i')
                                     .attr('id', 'rightIcon')
                                     .addClass('fa fa-caret-right')
-                                    )
+                                )
                                 .on('click', function (e) {
                                     var maxRows = $tbl.options.maxVisibleRowIndex || $tbl.numRows();
                                     var minRows = $tbl.options.minVisibleRowIndex || 0;
@@ -399,9 +394,9 @@ define([
                                     $tbl.displayRows();
 
                                 })
-                                )
                             )
                         )
+                    )
                     .append(
                         $.jqElem('div')
                         .addClass('pull-left')
@@ -417,7 +412,7 @@ define([
                                     $.jqElem('i')
                                     .attr('id', 'removeIcon')
                                     .addClass('fa fa-minus')
-                                    )
+                                )
                                 .on('click', function (e) {
 
                                     var currentVis = $tbl.options.maxVisibleRowIndex || 0;
@@ -432,8 +427,8 @@ define([
 
                                     $tbl.displayRows();
                                 })
-                                )
                             )
+                        )
                         .append(
                             $.jqElem('span')
                             .addClass('input-group-btn')
@@ -445,7 +440,7 @@ define([
                                     $.jqElem('i')
                                     .attr('id', 'addIcon')
                                     .addClass('fa fa-plus')
-                                    )
+                                )
                                 .on('click', function (e) {
                                     var currentVis = $tbl.options.maxVisibleRowIndex || 0;
                                     currentVis++;
@@ -463,29 +458,26 @@ define([
 
                                     $tbl.displayRows();
                                 })
-                                )
                             )
                         )
+                    )
                     .append(
                         $.jqElem('div')
                         .addClass('pull-right')
                         .attr('id', 'searchDiv')
-                        )
                     )
-                ;
+                );
 
             this._rewireIds(controlsTR, this);
 
-            this.data('searchDiv').kbaseSearchControls(
-                {
-                    onMouseover: false,
-                    type: 'inline',
-                    context: this,
-                    searchCallback: function (e, value, $tbl) {
-                        $tbl.refilter(value);
-                    }
+            this.data('searchDiv').kbaseSearchControls({
+                onMouseover: false,
+                type: 'inline',
+                context: this,
+                searchCallback: function (e, value, $tbl) {
+                    $tbl.refilter(value);
                 }
-            );
+            });
 
             return controlsTR;
 
@@ -532,33 +524,32 @@ define([
 
                 sortedRows =
                     this.options.structure.rows.slice().sort(
-                    function (a, b) {
-                        var keyA = a[h];
-                        var keyB = b[h];
+                        function (a, b) {
+                            var keyA = a[h];
+                            var keyB = b[h];
 
-                        if (keyA !== undefined && keyA.sortValue !== undefined) {
-                            keyA = keyA.sortValue;
-                        } else {
-                            keyA = typeof keyA === 'string' ? keyA.toLowerCase() : keyA;
+                            if (keyA !== undefined && keyA.sortValue !== undefined) {
+                                keyA = keyA.sortValue;
+                            } else {
+                                keyA = typeof keyA === 'string' ? keyA.toLowerCase() : keyA;
+                            }
+                            if (keyB !== undefined && keyB.sortValue !== undefined) {
+                                keyB = keyB.sortValue;
+
+                            } else {
+                                keyB = typeof keyB === 'string' ? keyB.toLowerCase() : keyB;
+                            }
+
+                            if (keyA < keyB) {
+                                return 0 - dir;
+                            } else if (keyA > keyB) {
+                                return dir;
+                            } else {
+                                return 0;
+                            }
+
                         }
-                        if (keyB !== undefined && keyB.sortValue !== undefined) {
-                            keyB = keyB.sortValue;
-
-                        } else {
-                            keyB = typeof keyB === 'string' ? keyB.toLowerCase() : keyB;
-                        }
-
-                        if (keyA < keyB) {
-                            return 0 - dir
-                        } else if (keyA > keyB) {
-                            return dir
-                        } else {
-                            return 0
-                        }
-
-                    }
-                )
-                    ;
+                    );
             }
 
             this.layoutRows(sortedRows, this.options.structure.header);
@@ -584,19 +575,16 @@ define([
                     var key = this.options.structure.keys[idx];
 
                     if (typeof key !== 'object') {
-                        key = {value: key};
+                        key = { value: key };
                     }
 
                     key.type = 'th';
                     key.style = 'white-space : nowrap';
 
-                    var $row = this.createRow(
-                        {
-                            key: key,
-                            value: {value: rows[key.value], key: key.value},
-                        },
-                        [{value: 'key'}, {value: 'value'}]
-                        );
+                    var $row = this.createRow({
+                        key: key,
+                        value: { value: rows[key.value], key: key.value },
+                    }, [{ value: 'key' }, { value: 'value' }]);
 
                     if ($row !== undefined && $row.children().length) {
                         numRows++;
@@ -650,16 +638,16 @@ define([
                 $cell.attr('style', options.style);
             }
             if (options.class !== undefined) {
-                var classes = typeof options.class === 'string'
-                    ? [options.class]
-                    : options.class;
+                var classes = typeof options.class === 'string' ?
+                    [options.class] :
+                    options.class;
 
                 $.each(
                     classes,
                     $.proxy(function (idx, cl) {
                         $cell.addClass(cl);
                     }, this)
-                    );
+                );
             }
 
             var events = ['mouseover', 'mouseout', 'click'];
@@ -670,7 +658,7 @@ define([
                         $cell.bind(e, options[e]);
                     }
                 }, this)
-                );
+            );
 
             if (options.colspan) {
                 $cell.attr('colspan', options.colspan);
@@ -699,9 +687,9 @@ define([
                     rowData,
                     $.proxy(function (idx, cell) {
 
-                        var value = typeof cell === 'object'
-                            ? cell.value
-                            : cell;
+                        var value = typeof cell === 'object' ?
+                            cell.value :
+                            cell;
 
                         if (value === undefined) {
                             return;
@@ -719,7 +707,7 @@ define([
                         $tr.append($td);
 
                     }, this)
-                    );
+                );
             } else if (headers !== undefined && headers.length) {
 
                 $.each(
@@ -754,9 +742,9 @@ define([
 
                         if (rowData[h] && !rowData[h].externalSortValue) {
 
-                            rowData[h].sortValue = label instanceof jQuery
-                                ? label.text()
-                                : label;
+                            rowData[h].sortValue = label instanceof jQuery ?
+                                label.text() :
+                                label;
                         }
 
                         $td.append(label);
@@ -770,7 +758,7 @@ define([
                         }
 
                     }, this)
-                    );
+                );
             }
 
             if (this.options.filter !== undefined) {
@@ -784,12 +772,10 @@ define([
 
         },
         deletePrompt: function (row) {
-            var $deleteModal = $('<div></div>').kbaseDeletePrompt(
-                {
-                    name: row,
-                    callback: this.deleteRowCallback(row)
-                }
-            );
+            var $deleteModal = $('<div></div>').kbaseDeletePrompt({
+                name: row,
+                callback: this.deleteRowCallback(row)
+            });
 
             $deleteModal.openPrompt();
         },

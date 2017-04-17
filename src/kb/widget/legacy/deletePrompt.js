@@ -37,29 +37,27 @@ define([
 ], function ($) {
     'use strict';
     $.KBWidget({
-        name: "kbaseDeletePrompt",
+        name: 'kbaseDeletePrompt',
         parent: 'kbasePrompt',
-        version: "1.0.0",
+        version: '1.0.0',
         options: {
             controls: ['cancelButton', 'okayButton']
         },
         init: function (options) {
             this._super(options);
 
-            return $('<div></div>').kbasePrompt(
-                {
-                    title: 'Confirm deletion',
-                    body: 'Really delete <strong>' + this.options.name + '</strong>?',
-                    controls: [
-                        'cancelButton',
-                        {
-                            name: 'Delete',
-                            type: 'primary',
-                            callback: this.options.callback
-                        }
-                    ]
-                }
-            );
+            return $('<div></div>').kbasePrompt({
+                title: 'Confirm deletion',
+                body: 'Really delete <strong>' + this.options.name + '</strong>?',
+                controls: [
+                    'cancelButton',
+                    {
+                        name: 'Delete',
+                        type: 'primary',
+                        callback: this.options.callback
+                    }
+                ]
+            });
         }
     });
 });
