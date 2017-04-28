@@ -37,7 +37,11 @@ define([
 
         function makeFactoryWidget(widget, config) {
             return new Promise(function (resolve, reject) {
-                require([widget.module], function (factory) {
+                var required = [widget.module];
+                if (widget.css) {
+                    required.push('css!' + widget.module + '.css');
+                }
+                require(required, function (factory) {
                     if (typeof factory === 'undefined') {
                         reject({
                             message: 'Factory widget maker is undefined for ' + widget.module,
