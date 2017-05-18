@@ -1,11 +1,7 @@
 define([
-    'bluebird',
-    'kb_common/dom',
-    'kb_common/html'
+    'bluebird'
 ], function (
-    Promise,
-    dom,
-    html
+    Promise
 ) {
     'use strict';
 
@@ -22,8 +18,7 @@ define([
             throw new Error('The widget mounter needs a runtime object in order to find and mount widgets.');
         }
 
-        container = mounted.appendChild(dom.createElement('div'));
-        container.id = html.genId();
+        container = mounted;
 
         function unmount() {
             return Promise.try(function () {
@@ -40,14 +35,7 @@ define([
                             return widget.detach && widget.detach();
                         })
                         .then(function () {
-                            if (mountedWidget.container) {
-                                try {
-                                    container.removeChild(mountedWidget.container);
-                                } catch (ex) {
-                                    console.error('Error removing mounted widget');
-                                    console.error(ex);
-                                }
-                            }
+                            container.innerHTML = '';
                         })
                         .then(function () {
                             return widget.destroy && widget.destroy();
@@ -73,7 +61,6 @@ define([
             // to unmount before it is finished.
             mountedWidget = {
                 mountId: currentMountId,
-                id: html.genId(),
                 widget: null,
                 container: null
             };
@@ -91,7 +78,10 @@ define([
                 })
                 .spread(function (widget) {
                     // Give it a container and attach it to it.
-                    mountedWidget.container = container.appendChild(dom.createElement('div'));
+
+                    // aww, just give it the container...
+                    // mountedWidget.container = container.appendChild(dom.createElement('div'));
+                    mountedWidget.container = container;
                     return Promise.all([widget, widget.attach && widget.attach(mountedWidget.container)]);
                 })
                 .spread(function (widget) {
