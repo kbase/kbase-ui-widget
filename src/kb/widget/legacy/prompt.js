@@ -99,53 +99,42 @@ define([
                 return this.data('dialogModal');
             }
 
-            var $dialogModal =
-                $('<div></div>')
+            var $dialogModal = $('<div></div>')
                 .attr('class', 'modal ' + this.options.modalClass)
                 .attr('tabindex', '-1')
-                .append(
-                    $.jqElem('div')
+                .append($.jqElem('div')
                     .addClass('modal-dialog')
-                    .append(
-                        $.jqElem('div')
+                    .append($.jqElem('div')
                         .addClass('modal-content')
-                        .append(
-                            $('<div></div>')
+                        .append($('<div></div>')
                             .attr('class', 'modal-header')
-                            .append(
-                                $('<button></button>')
+                            .append($('<button></button>')
                                 .attr('type', 'button')
                                 .attr('class', 'close')
                                 .attr('data-dismiss', 'modal')
                                 .attr('aria-hidden', 'true')
                                 .append('x\n')
                             )
-                            .append(
-                                $('<h3></h3>')
+                            .append($('<h3></h3>')
                                 .addClass('modal-title')
                                 .attr('id', 'title')
                             )
                         )
-                        .append(
-                            $('<div></div>')
+                        .append($('<div></div>')
                             .attr('class', 'modal-body')
                             .attr('id', 'body')
                         )
-                        .append(
-                            $('<div></div>')
+                        .append($('<div></div>')
                             .attr('class', 'modal-footer')
-                            .append(
-                                $('<div></div>')
+                            .append($('<div></div>')
                                 .addClass('row')
                                 .addClass('form-horizontal')
-                                .append(
-                                    $('<div></div>')
+                                .append($('<div></div>')
                                     .addClass('col-sm-5')
                                     .addClass('text-left')
                                     .attr('id', 'footer')
                                 )
-                                .append(
-                                    $('<div></div>')
+                                .append($('<div></div>')
                                     .addClass('col-sm-7')
                                     .attr('id', 'controls')
                                     .css('white-space', 'nowrap')
@@ -194,8 +183,7 @@ define([
                         btnClass = btnClass + ' btn-' + val.type;
                     }
 
-                    var $button =
-                        $('<a></a>')
+                    var $button = $('<a></a>')
                         .attr('href', '#')
                         .attr('class', btnClass)
                         .append(val.name)

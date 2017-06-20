@@ -116,8 +116,7 @@ define([
 
             var $nav = $('<li></li>')
                 .css('white-space', 'nowrap')
-                .append(
-                    $('<a></a>')
+                .append($('<a></a>')
                     .attr('href', '#')
                     .text(tab.tab)
                     .attr('data-tab', tab.tab)
@@ -153,8 +152,7 @@ define([
                                 });
                         }
                     )
-                    .append(
-                        $('<button></button>')
+                    .append($('<button></button>')
                         .addClass('btn btn-default btn-xs')
                         .append($('<i></i>').addClass(this.closeIcon()))
                         .css('padding', '0px')

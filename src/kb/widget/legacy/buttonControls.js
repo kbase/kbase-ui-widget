@@ -32,9 +32,9 @@
 
 define([
     'jquery',
-    './geometry/rectangle',
-    './geometry/point',
-    './geometry/size',
+    '../geometry/rectangle',
+    '../geometry/point',
+    '../geometry/size',
     'bootstrap',
     'css!font_awesome',
     './widget'
@@ -55,15 +55,11 @@ define([
             posOffset: '0px'
         },
         init: function (options) {
-
             this._super(options);
-
             this._controls = {};
-
             this.appendUI($(this.$elem));
 
             return this;
-
         },
         bounds: function ($e) {
             var offset = $e.offset();
@@ -74,13 +70,10 @@ define([
             );
         },
         visibleBounds: function ($e) {
-
             var rect = this.bounds($e);
-
             var throttle = 0;
 
             while ($e = $e.parent()) {
-
                 var parentRect = this.bounds($e);
                 rect = rect.intersectRect(parentRect);
 
@@ -96,20 +89,16 @@ define([
             }
 
             return rect;
-
         },
         appendUI: function ($elem) {
-
             if (this.options.type == 'floating') {
-                $elem
-                    .css('position', 'relative');
+                $elem.css('position', 'relative');
 
                 //XXX godawful hack to pop the tooltips to the top.
                 $elem.append($.jqElem('style').text('.tooltip { position : fixed }'));
             }
 
-            var $controlButtons =
-                $('<div></div>')
+            var $controlButtons = $('<div></div>')
                 .addClass('btn-group btn-group-xs')
                 .attr('id', 'control-buttons');
 
@@ -130,41 +119,36 @@ define([
                 var $controls = this;
 
                 $elem
-                    .mouseover(
-                        function (e) {
+                    .mouseover(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            if (window._active_kbaseButtonControls != undefined) {
-                                window._active_kbaseButtonControls.hide();
-                            }
-
-                            $(this).children().first().show();
-
-                            window._active_kbaseButtonControls = $controlButtons;
+                        if (window._active_kbaseButtonControls != undefined) {
+                            window._active_kbaseButtonControls.hide();
                         }
-                    )
-                    .mouseout(
-                        function (e) {
-                            e.preventDefault();
-                            e.stopPropagation();
 
-                            var controlBounds = $controls.bounds($controlButtons);
-                            var controlBoundsV = $controls.visibleBounds($controlButtons);
-                            var elemBounds = $controls.bounds($elem);
+                        $(this).children().first().show();
 
-                            if (!controlBoundsV.containsPoint(new Point(e.pageX, e.pageY))) {
-                                //if (! $.contains($elem.get(0), e.target)) {
-                                window._active_kbaseButtonControls.hide();
+                        window._active_kbaseButtonControls = $controlButtons;
+                    })
+                    .mouseout(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                                window._active_kbaseButtonControls = undefined;
+                        var controlBounds = $controls.bounds($controlButtons);
+                        var controlBoundsV = $controls.visibleBounds($controlButtons);
+                        var elemBounds = $controls.bounds($elem);
 
-                            }
-                            overParent = false;
+                        if (!controlBoundsV.containsPoint(new Point(e.pageX, e.pageY))) {
+                            //if (! $.contains($elem.get(0), e.target)) {
+                            window._active_kbaseButtonControls.hide();
+
+                            window._active_kbaseButtonControls = undefined;
 
                         }
-                    )
+                        overParent = false;
+
+                    })
                     .children().first().hide();
             }
 
@@ -182,7 +166,7 @@ define([
         },
         setControls: function (controls) {
             this.data('control-buttons').empty();
-            for (control in this._controls) {
+            for (var control in this._controls) {
                 this._controls[control] = undefined;
             }
 
@@ -203,7 +187,7 @@ define([
                         btnClass = btnClass + ' btn-' + val.type;
                     }
 
-                    tooltip = val.tooltip;
+                    var tooltip = val.tooltip;
 
                     if (typeof val.tooltip == 'string') {
                         tooltip = { title: val.tooltip };
@@ -225,8 +209,7 @@ define([
                         tooltip.delay = 1;
                     }
 
-                    var $button =
-                        $('<button></button>')
+                    var $button = $('<button></button>')
                         .attr('href', '#')
                         .css('padding-top', '1px')
                         .css('padding-bottom', '1px')
@@ -243,20 +226,19 @@ define([
                                 }
                                 val.callback.call(this, e, $buttonControls.options.context);
                             }
-                        )
-                        /*.on('mouseover',
-                         function(e) {
-                         e.preventDefault(); e.stopPropagation();
-                         $(this).tooltip('show');
-                         }
-                         )
-                         .on('mouseout',
-                         function(e) {
-                         e.preventDefault(); e.stopPropagation();
-                         $(this).tooltip('hide');
-                         }
-                         );*/
-                    ;
+                        );
+                    /*.on('mouseover',
+                     function(e) {
+                     e.preventDefault(); e.stopPropagation();
+                     $(this).tooltip('show');
+                     }
+                     )
+                     .on('mouseout',
+                     function(e) {
+                     e.preventDefault(); e.stopPropagation();
+                     $(this).tooltip('hide');
+                     }
+                     );*/
 
                     if (val.id) {
                         this._controls[val.id] = $button;
@@ -270,5 +252,4 @@ define([
             );
         },
     });
-
 });
