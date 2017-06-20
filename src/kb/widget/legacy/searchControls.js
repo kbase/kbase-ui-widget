@@ -64,11 +64,9 @@ define([
             if (this.options.type === 'floating') {
                 $elem.css('position', 'relative');
             }
-            var $filterbox =
-                $.jqElem('div')
+            var $filterbox = $.jqElem('div')
                 .addClass('input-group input-group-sm')
-                .append(
-                    $.jqElem('input')
+                .append($.jqElem('input')
                     .attr('type', 'text')
                     .addClass('form-control')
                     .attr('id', 'searchBox')
@@ -95,15 +93,12 @@ define([
 
                     })
                 )
-                .append(
-                    $.jqElem('span')
+                .append($.jqElem('span')
                     .addClass('input-group-btn')
-                    .append(
-                        $.jqElem('button')
+                    .append($.jqElem('button')
                         .addClass('btn btn-default')
                         .attr('id', 'searchButton')
-                        .append(
-                            $.jqElem('i')
+                        .append($.jqElem('i')
                             .attr('id', 'searchIcon')
                             .addClass('fa fa-search')
                         )

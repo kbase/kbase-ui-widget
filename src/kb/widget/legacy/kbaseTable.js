@@ -141,8 +141,7 @@ define([
             }
 
             if (this.options.caption) {
-                $tbl.append(
-                    $('<caption></caption>')
+                $tbl.append($('<caption></caption>')
                     .append(this.options.caption)
                 );
             }
@@ -229,8 +228,6 @@ define([
                                     this.data('lastSortDir', undefined);
                                     this.data('lastSort', undefined);
                                 }
-
-
                             }, this));
 
                             this.sortButtons()[header.value] = $button;
@@ -248,13 +245,11 @@ define([
                         }
 
                         $tr.append($th);
-
                     }, this)
                 );
 
                 $thead.append($tr);
                 $tbl.append($thead);
-
             }
 
             if (struct.rows) {
@@ -313,23 +308,18 @@ define([
 
             var controlsTR = $.jqElem('tr')
                 .css('display', this.options.navControls ? undefined : 'none')
-                .append(
-                    $.jqElem('td')
+                .append($.jqElem('td')
                     .attr('colspan', colspan)
                     .css('background-color', 'lightgray')
-                    .append(
-                        $.jqElem('div')
+                    .append($.jqElem('div')
                         .addClass('pull-left')
                         .addClass('input-group input-group-sm')
-                        .append(
-                            $.jqElem('span')
+                        .append($.jqElem('span')
                             .addClass('input-group-btn')
-                            .append(
-                                $.jqElem('button')
+                            .append($.jqElem('button')
                                 .addClass('btn btn-default')
                                 .attr('id', 'pageLeftButton')
-                                .append(
-                                    $.jqElem('i')
+                                .append($.jqElem('i')
                                     .attr('id', 'leftIcon')
                                     .addClass('fa fa-caret-left')
                                 )
@@ -358,21 +348,17 @@ define([
                          .attr('id', 'visRecords')
                          .kb_bind(this, 'visRowString')
                          )*/
-                        .append(
-                            $.jqElem('span')
+                        .append($.jqElem('span')
                             .attr('id', 'visRecords')
                             .addClass('input-group-addon')
                             .kb_bind(this, 'visRowString')
                         )
-                        .append(
-                            $.jqElem('span')
+                        .append($.jqElem('span')
                             .addClass('input-group-btn')
-                            .append(
-                                $.jqElem('button')
+                            .append($.jqElem('button')
                                 .addClass('btn btn-default')
                                 .attr('id', 'pageRightButton')
-                                .append(
-                                    $.jqElem('i')
+                                .append($.jqElem('i')
                                     .attr('id', 'rightIcon')
                                     .addClass('fa fa-caret-right')
                                 )
@@ -397,26 +383,20 @@ define([
                             )
                         )
                     )
-                    .append(
-                        $.jqElem('div')
+                    .append($.jqElem('div')
                         .addClass('pull-left')
                         .addClass('input-group input-group-sm')
-                        .append(
-                            $.jqElem('span')
+                        .append($.jqElem('span')
                             .addClass('input-group-btn')
-                            .append(
-                                $.jqElem('button')
+                            .append($.jqElem('button')
                                 .addClass('btn btn-default')
                                 .attr('id', 'removeButton')
-                                .append(
-                                    $.jqElem('i')
+                                .append($.jqElem('i')
                                     .attr('id', 'removeIcon')
                                     .addClass('fa fa-minus')
                                 )
                                 .on('click', function (e) {
-
                                     var currentVis = $tbl.options.maxVisibleRowIndex || 0;
-
                                     currentVis--;
 
                                     if (currentVis < 1) {
@@ -429,15 +409,12 @@ define([
                                 })
                             )
                         )
-                        .append(
-                            $.jqElem('span')
+                        .append($.jqElem('span')
                             .addClass('input-group-btn')
-                            .append(
-                                $.jqElem('button')
+                            .append($.jqElem('button')
                                 .addClass('btn btn-default')
                                 .attr('id', 'addButton')
-                                .append(
-                                    $.jqElem('i')
+                                .append($.jqElem('i')
                                     .attr('id', 'addIcon')
                                     .addClass('fa fa-plus')
                                 )
@@ -461,8 +438,7 @@ define([
                             )
                         )
                     )
-                    .append(
-                        $.jqElem('div')
+                    .append($.jqElem('div')
                         .addClass('pull-right')
                         .attr('id', 'searchDiv')
                     )
@@ -638,8 +614,7 @@ define([
                 $cell.attr('style', options.style);
             }
             if (options.class !== undefined) {
-                var classes = typeof options.class === 'string' ?
-                    [options.class] :
+                var classes = typeof options.class === 'string' ? [options.class] :
                     options.class;
 
                 $.each(
