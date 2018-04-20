@@ -62,6 +62,33 @@ define([
             });
         }
 
+        function makeES6Widget(widget, config) {
+            return new Promise(function (resolve, reject) {
+                var required = [widget.module];
+                if (widget.css) {
+                    required.push('css!' + widget.module + '.css');
+                }
+                require(required, function (Widget) {
+                    if (typeof Widget === 'undefined') {
+                        reject({
+                            message: 'Widget class is undefined for ' + widget.module,
+                            data: { widget: widget }
+                        });
+                        return;
+                    }
+                    // if (factory.make === undefined) {
+                    //     reject('Factory widget does not have a "make" method: ' + widget.name + ', ' + widget.module);
+                    //     return;
+                    // }
+                    try {
+                        resolve(new Widget(config));
+                    } catch (ex) {
+                        reject(ex);
+                    }
+                });
+            });
+        }
+
         function makeObjectWidget(widget, config) {
             return Promise.try(function () {
                 return widgetAdapter.make({
@@ -116,6 +143,9 @@ define([
             switch (widgetDef.type) {
             case 'factory':
                 widgetPromise = makeFactoryWidget(widgetDef, config);
+                break;
+            case 'es6':
+                widgetPromise = makeES6Widget(widgetDef, config);
                 break;
             case 'object':
                 widgetPromise = makeObjectWidget(widgetDef, config);
