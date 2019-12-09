@@ -24,11 +24,9 @@ define([
             this._super(options);
             // An authenticated widget needs to get the initial auth state
             // from the KBaseSessionSync jquery extension.
-            // var sessionObject = Session.getKBaseSession();
-            this.setAuth(this.runtime.getService('session').getKbaseSession());
+            this.setAuth(this.runtime.service('session').getKBaseSession());
 
             // This is how to pull the value out of the auth attribute.
-            // var auth = this.auth();
             if (this.loggedInQueryCallback && this.authToken()) {
                 this.callAfterInit(function () {
                     // use the current auth attribute value, since this is run asynchronously, and who knows,
